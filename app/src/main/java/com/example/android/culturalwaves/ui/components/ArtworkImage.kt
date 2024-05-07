@@ -1,12 +1,15 @@
 package com.example.android.culturalwaves.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.android.culturalwaves.R
 
+
 @Composable
 fun ArtworkImage(
     imageUrl: String,
@@ -28,22 +32,33 @@ fun ArtworkImage(
         model = imageUrl,
         contentDescription = contentDescription,
         modifier = modifier
-            .size(width = 308.dp, height = 247.dp),// Задаем размеры изображения
-        contentScale = ContentScale.Crop, // Обрезаем изображение, чтобы оно заполнило контейнер
+            .fillMaxWidth() // Устанавливаем ширину изображения на максимальную доступную
+            .aspectRatio(1f), // Сохраняем соотношение сторон, можно адаптировать под нужные пропорции
+        contentScale = ContentScale.Crop,
         loading = {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Box(modifier = Modifier.matchParentSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         },
         error = {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.matchParentSize()) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Ошибка загрузки",
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
+                    tint = MaterialTheme.colorScheme.error
                 )
-                Text("Ошибка загрузки", modifier = Modifier.align(Alignment.Center))
+                Text(
+                    "Ошибка загрузки",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.Center) // Правильно центрируем текст внутри Box
+                )
             }
         }
     )
 }
+
