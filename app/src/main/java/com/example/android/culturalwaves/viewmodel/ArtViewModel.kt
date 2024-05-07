@@ -32,11 +32,3 @@ class ArtViewModel(private val artRepository: ArtRepository) : ViewModel() {
 }
 
 
-class ArtViewModelFactory(private val apiService: ArtMuseumApiService) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ArtViewModel::class.java)) {
-            return ArtViewModel(ArtRepository(apiService)) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}

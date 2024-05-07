@@ -17,7 +17,7 @@ import com.example.android.culturalwaves.network.RetrofitClient
 import com.example.android.culturalwaves.ui.ArtworkListScreen
 import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
-import com.example.android.culturalwaves.viewmodel.ArtViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +31,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
 
-                    val artViewModel: ArtViewModel = viewModel(factory = ArtViewModelFactory(
-                        RetrofitClient.instance)
-                    )
+                    val artViewModel: ArtViewModel = getViewModel()
                     ArtworkListScreen(artViewModel)
 
 
