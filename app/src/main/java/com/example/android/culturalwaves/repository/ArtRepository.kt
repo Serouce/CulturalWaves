@@ -1,10 +1,12 @@
-package com.example.android.culturalwaves.network
+package com.example.android.culturalwaves.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import com.example.android.culturalwaves.model.Artwork
+import com.example.android.culturalwaves.network.ArtMuseumApiService
+import com.example.android.culturalwaves.network.RetrofitClient
 import kotlinx.coroutines.flow.Flow
 
 

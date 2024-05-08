@@ -1,21 +1,14 @@
 package com.example.android.culturalwaves.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.android.culturalwaves.model.Artwork
-import com.example.android.culturalwaves.network.ArtMuseumApiService
-import com.example.android.culturalwaves.network.ArtRepository
+import com.example.android.culturalwaves.repository.ArtRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-
-
 
 
 class ArtViewModel(private val artRepository: ArtRepository) : ViewModel() {

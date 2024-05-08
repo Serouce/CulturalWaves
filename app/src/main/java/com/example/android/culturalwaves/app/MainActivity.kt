@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves
+package com.example.android.culturalwaves.app
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
