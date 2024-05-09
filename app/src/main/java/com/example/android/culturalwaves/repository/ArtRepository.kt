@@ -26,9 +26,7 @@ class ArtRepository(private val apiService: ArtMuseumApiService) {
         ).flow
     }
 
-    fun getArtPagingSource(): PagingSource<Int, Artwork> {
-        return ArtworkPagingSource(apiService)
-    }
+
 }
 
-val artRepository = ArtRepository(RetrofitClient.instance)
+// val artRepository = ArtRepository(RetrofitClient.instance)
