@@ -14,19 +14,15 @@ private const val API_KEY = "457bf8b1-0c12-46bd-8f80-bd7ff41905d6"
 
 
 class ArtRepository(private val apiService: ArtMuseumApiService) {
+    private val pagerConfigurator = PagerConfigurator()
 
     fun getArtworksStream(): Flow<PagingData<Artwork>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = 20,               // Определяем размер страницы, который подходит для вашего случая
-                enablePlaceholders = false,  // Включаем или отключаем placeholders в зависимости от вашего предпочтения
-                maxSize = 100               // Максимальный размер загруженных данных в памяти
-            ),
+            config = pagerConfigurator.getDefaultConfig(),
             pagingSourceFactory = { ArtworkPagingSource(apiService, API_KEY) }
         ).flow
     }
-
-
 }
+
 
 // val artRepository = ArtRepository(RetrofitClient.instance)

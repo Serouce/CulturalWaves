@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
+import com.example.android.culturalwaves.utils.StringUtils
 
 
 @Composable
@@ -38,19 +39,8 @@ fun CardTemplate(
     onFavoriteClick: () -> Unit,
     onCardClick: () -> Unit
 ) {
-    val maxTitleLength = 40
-    val displayedTitle = if (title.length > maxTitleLength) {
-        title.substring(0, maxTitleLength - 3) + "..."
-    } else {
-        title
-    }
-
-    val maxArtistLength = 25
-    val displayedArtist = if (artist.length > maxArtistLength) {
-        artist.substring(0, maxArtistLength - 3) + "..."
-    } else {
-        artist
-    }
+    val displayedTitle = StringUtils.truncateString(title, 40)
+    val displayedArtist = StringUtils.truncateString(artist, 25)
 
     Card(
         modifier = Modifier
