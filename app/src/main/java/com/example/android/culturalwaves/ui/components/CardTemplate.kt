@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
 import com.example.android.culturalwaves.utils.StringUtils
@@ -38,14 +40,16 @@ fun CardTemplate(
     objectId: Int,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
-    onCardClick: (Int) -> Unit
+    onCardClick: (Int) -> Unit,
+    cardWidth: Dp = 330.dp,  // параметр для ширины карточки
+    cardHeight: Dp = 300.dp  // параметр для высоты карточки
 ) {
-    val displayedTitle = StringUtils.truncateString(title, 40)
-    val displayedArtist = StringUtils.truncateString(artist, 25)
+    val displayedTitle = remember(title) { StringUtils.truncateString(title, 40) }
+    val displayedArtist = remember(artist) { StringUtils.truncateString(artist, 25) }
 
     Card(
         modifier = Modifier
-            .size(width = 330.dp, height = 300.dp)
+            .size(width = cardWidth, height = cardHeight)
             .clickable { onCardClick(objectId) }
             .padding(10.dp),
         shape = RoundedCornerShape(12.dp),
@@ -55,8 +59,7 @@ fun CardTemplate(
             ArtworkImage(
                 imageUrl = imageUrl,
                 contentDescription = title,
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             )
             Column(
                 modifier = Modifier
@@ -99,7 +102,5 @@ fun CardTemplate(
         }
     }
 }
-
-
 
 

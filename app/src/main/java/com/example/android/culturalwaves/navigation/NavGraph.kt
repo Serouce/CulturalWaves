@@ -22,8 +22,7 @@ import org.koin.core.parameter.parametersOf
 fun SetupNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
         composable(Screen.MainScreen.route) {
-            val artViewModel: ArtViewModel = koinViewModel()
-            MainScreen(artViewModel = artViewModel) { objectId ->
+            MainScreen() { objectId ->
                 navController.navigate(Screen.DetailScreen(objectId).createRoute())
             }
         }
@@ -32,8 +31,7 @@ fun SetupNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("objectId") { type = NavType.IntType })
         ) { backStackEntry ->
             val objectId = backStackEntry.arguments?.getInt("objectId") ?: return@composable
-            val detailViewModel: ArtworkDetailViewModel = koinViewModel(parameters = { parametersOf(objectId) })
-            DetailScreen(viewModel = detailViewModel)
+            DetailScreen(objectId)
         }
     }
 }

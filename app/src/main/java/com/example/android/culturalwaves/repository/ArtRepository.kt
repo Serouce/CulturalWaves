@@ -39,4 +39,3 @@ class ArtRepository(private val apiService: ArtMuseumApiService) {
 }
 
 
-// val artRepository = ArtRepository(RetrofitClient.instance)

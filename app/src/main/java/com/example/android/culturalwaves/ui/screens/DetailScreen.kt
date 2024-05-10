@@ -38,6 +38,8 @@ import com.example.android.culturalwaves.model.Artist
 import com.example.android.culturalwaves.model.ImageDetail
 import com.example.android.culturalwaves.ui.components.ArtworkImage
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ImageThumbnail(imageDetail: ImageDetail) {
@@ -67,7 +69,8 @@ fun ImageThumbnail(imageDetail: ImageDetail) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(viewModel: ArtworkDetailViewModel) {
+fun DetailScreen(objectId: Int) {
+    val viewModel: ArtworkDetailViewModel = koinViewModel { parametersOf(objectId) }
     val artworkDetailState = viewModel.artworkDetails.collectAsState()
 
     artworkDetailState.value?.let { artworkDetail ->
@@ -97,7 +100,7 @@ fun DetailScreen(viewModel: ArtworkDetailViewModel) {
                         contentDescription = artworkDetail.title,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1.5f)  // Maintain aspect ratio for better visual appearance
+                            .aspectRatio(1.5f)
                             .clip(RoundedCornerShape(12.dp))
                             .padding(16.dp)
                     )
@@ -120,6 +123,7 @@ fun DetailScreen(viewModel: ArtworkDetailViewModel) {
         }
     }
 }
+
 
 @Composable
 fun SimpleDetailSection(label: String, content: String?) {
