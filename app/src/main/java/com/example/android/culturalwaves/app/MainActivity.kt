@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import com.example.android.culturalwaves.navigation.SetupNavGraph
 import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
@@ -23,10 +25,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
+                    val navController = rememberNavController()
 
-                    val artViewModel: ArtViewModel = getViewModel()
-                    MainScreen(artViewModel)
 
+                    SetupNavGraph(navController = navController)
 
                 }
             }

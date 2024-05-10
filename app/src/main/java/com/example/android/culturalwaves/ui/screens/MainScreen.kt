@@ -15,7 +15,7 @@ import com.example.android.culturalwaves.ui.components.CardTemplate
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
 
 @Composable
-fun MainScreen(artViewModel: ArtViewModel) {
+fun MainScreen(artViewModel: ArtViewModel, onArtworkSelected: (Int) -> Unit) {
     val artworks: LazyPagingItems<Artwork> = artViewModel.artworks.collectAsLazyPagingItems()
 
     // Определяем стиль для темы Material 3
@@ -33,9 +33,10 @@ fun MainScreen(artViewModel: ArtViewModel) {
                             imageUrl = artwork.imageUrl ?: "",
                             title = artwork.title ?: "Нет названия",
                             artist = artwork.people?.joinToString { artist -> artist.name ?: "Неизвестный художник" } ?: "Неизвестный художник",
+                            objectId = artwork.objectId ?: 0,
                             isFavorite = false,  // Значение можно обновить, используя состояние из ViewModel
                             onFavoriteClick = { /* TODO: Добавить обработку добавления в избранное */ },
-                            onCardClick = { /* TODO: Добавить обработку навигации на детальный экран */ }
+                            onCardClick = onArtworkSelected
                         )
                     }
                 }
@@ -43,5 +44,4 @@ fun MainScreen(artViewModel: ArtViewModel) {
         }
     }
 }
-
 

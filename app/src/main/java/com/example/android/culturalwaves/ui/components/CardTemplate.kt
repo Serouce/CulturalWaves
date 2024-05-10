@@ -35,9 +35,10 @@ fun CardTemplate(
     imageUrl: String,
     title: String,
     artist: String,
+    objectId: Int,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
-    onCardClick: () -> Unit
+    onCardClick: (Int) -> Unit
 ) {
     val displayedTitle = StringUtils.truncateString(title, 40)
     val displayedArtist = StringUtils.truncateString(artist, 25)
@@ -45,7 +46,7 @@ fun CardTemplate(
     Card(
         modifier = Modifier
             .size(width = 330.dp, height = 300.dp)
-            .clickable(onClick = onCardClick)
+            .clickable { onCardClick(objectId) }
             .padding(10.dp),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)

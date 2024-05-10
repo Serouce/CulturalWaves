@@ -9,10 +9,14 @@ import androidx.paging.cachedIn
 import com.example.android.culturalwaves.model.Artwork
 import com.example.android.culturalwaves.repository.ArtRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 
 
 class ArtViewModel(private val artRepository: ArtRepository) : ViewModel() {
-    val artworks: Flow<PagingData<Artwork>> = artRepository.getArtworksStream().cachedIn(viewModelScope)
+    val artworks: StateFlow<PagingData<Artwork>> = artRepository.getArtworksStream()
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PagingData.empty())
 }
-
 

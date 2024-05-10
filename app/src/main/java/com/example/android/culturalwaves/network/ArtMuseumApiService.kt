@@ -1,8 +1,10 @@
 package com.example.android.culturalwaves.network
 
 import com.example.android.culturalwaves.model.ArtResponse
+import com.example.android.culturalwaves.model.ArtworkDetailResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ArtMuseumApiService {
@@ -14,4 +16,10 @@ interface ArtMuseumApiService {
         @Query("classification") classification: String? = null,
         @Query("sort") sort: String? = null
     ): Response<ArtResponse>
+
+    @GET("object/{objectID}")
+    suspend fun fetchArtworkDetails(
+        @Path("objectID") objectID: Int,
+        @Query("apikey") apiKey: String
+    ): Response<ArtworkDetailResponse>
 }

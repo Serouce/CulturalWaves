@@ -19,9 +19,9 @@ val viewModelModule = module {
     viewModel { ArtViewModel(get()) }  // Использует ArtRepository для создания ViewModel
 }
 val viewModelDetailModule = module {
-    // Создание ViewModel с параметром objectId
     viewModel { (objectId: Int) -> ArtworkDetailViewModel(get(), objectId) }
 }
+
 
 
 
