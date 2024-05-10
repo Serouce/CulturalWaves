@@ -33,32 +33,42 @@ import com.example.android.culturalwaves.ui.components.ArtworkImage
 import com.example.android.culturalwaves.ui.components.CardTemplate
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
+
+
 
 @Composable
 fun MainScreen(onArtworkSelected: (Int) -> Unit) {
-    // Используем koinViewModel для создания или получения уже существующей ViewModel
     val artViewModel: ArtViewModel = koinViewModel()
-
-    // Собираем арт-объекты в LazyPagingItems для пагинации
     val artworks: LazyPagingItems<Artwork> = artViewModel.artworks.collectAsLazyPagingItems()
 
     MaterialTheme {
-        Scaffold { _ ->
+        Scaffold { padding ->
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 180.dp),  // Адаптивные колонки в зависимости от размера экрана
-                contentPadding = PaddingValues(16.dp),  // Общий отступ вокруг сетки
-                verticalArrangement = Arrangement.spacedBy(16.dp),  // Расстояние между элементами по вертикали
-                horizontalArrangement = Arrangement.spacedBy(16.dp)  // Расстояние между элементами по горизонтали
+                columns = GridCells.Adaptive(minSize = 180.dp),
+                contentPadding = PaddingValues(
+                    top = padding.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(artworks.itemCount) { index ->
                     artworks[index]?.let { artwork ->
                         CardTemplate(
                             imageUrl = artwork.imageUrl ?: "",
-                            title = artwork.title ?: "Нет названия",
-                            artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Неизвестный художник" } ?: "Неизвестный художник",
+                            title = artwork.title ?: "No Title",
+                            artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
                             objectId = artwork.objectId ?: 0,
-                            isFavorite = false,  // Значение можно обновить, используя состояние из ViewModel
-                            onFavoriteClick = { /* TODO: Добавить обработку добавления в избранное */ },
+                            isFavorite = false,
+                            onFavoriteClick = { /* TODO: Handle favorite */ },
                             onCardClick = onArtworkSelected
                         )
                     }
