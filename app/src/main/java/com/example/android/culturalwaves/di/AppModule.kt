@@ -3,6 +3,7 @@ package com.example.android.culturalwaves.di
 import com.example.android.culturalwaves.repository.ArtRepository
 import com.example.android.culturalwaves.network.RetrofitClient
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
+import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -17,6 +18,12 @@ val repositoryModule = module {
 val viewModelModule = module {
     viewModel { ArtViewModel(get()) }  // Использует ArtRepository для создания ViewModel
 }
+val viewModelDetailModule = module {
+    // Создание ViewModel с параметром objectId
+    viewModel { (objectId: Int) -> ArtworkDetailViewModel(get(), objectId) }
+}
+
+
 
 // Объединяем все модули в один список для Koin
-val appModules = listOf(networkModule, repositoryModule, viewModelModule)
+val appModules = listOf(networkModule, repositoryModule, viewModelModule, viewModelDetailModule)
