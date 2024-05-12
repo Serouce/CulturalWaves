@@ -17,6 +17,7 @@ import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.screens.SearchScreen
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
+import com.example.android.culturalwaves.viewmodel.CategoryViewModel
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -54,4 +55,3 @@ fun SetupNavGraph(navController: NavHostController) {
         }
     }
 }
-

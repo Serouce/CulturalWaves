@@ -14,7 +14,10 @@ interface ArtMuseumApiService {
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 10,
         @Query("classification") classification: String? = null,
-        @Query("sort") sort: String = "random"
+        @Query("sort") sort: String = "random",
+        @Query("title") title: String? = null,
+        @Query("person") person: String? = null,
+        @Query("description") description: String? = null
     ): Response<ArtResponse>
 
     @GET("object/{objectID}")

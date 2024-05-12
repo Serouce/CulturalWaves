@@ -20,3 +20,4 @@ class ArtViewModel(private val artRepository: ArtRepository) : ViewModel() {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PagingData.empty())
 }
 
+
