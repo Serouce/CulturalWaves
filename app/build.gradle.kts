@@ -1,6 +1,9 @@
 plugins {
+    kotlin("kapt")
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+
+
 }
 
 android {
@@ -54,7 +57,16 @@ android {
 dependencies {
 
     val nav_version = "2.7.7"
-    val paging_version = "3.2.1"
+    val room_version = "2.6.1"
+
+
+
+
+    //Room
+    //Room
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt ("androidx.room:room-compiler:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
 
 
 
@@ -81,6 +93,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
 
 
+    //MD3
+    implementation("androidx.compose.material3:material3:1.2.1")
+
+
     // Coil для загрузки изображений в Compose
     implementation("io.coil-kt:coil-compose:2.6.0")
 
@@ -91,7 +107,6 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -20,6 +20,8 @@ interface ArtMuseumApiService {
         @Query("description") description: String? = null
     ): Response<ArtResponse>
 
+
+
     @GET("object/{objectID}")
     suspend fun fetchArtworkDetails(
         @Path("objectID") objectID: Int,

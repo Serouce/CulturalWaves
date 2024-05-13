@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
+import com.example.android.culturalwaves.model.ArtResponse
 import com.example.android.culturalwaves.model.Artwork
 import com.example.android.culturalwaves.model.ArtworkDetailResponse
 import com.example.android.culturalwaves.network.ArtMuseumApiService
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import retrofit2.Response
 
 
 private const val API_KEY = "457bf8b1-0c12-46bd-8f80-bd7ff41905d6"
@@ -45,4 +47,8 @@ class ArtRepository(private val apiService: ArtMuseumApiService) {
             null // Логирование или дополнительная обработка исключений
         }
     }
+    suspend fun fetchArtworksForSuggestions(query: String): Response<ArtResponse> {
+        return apiService.fetchArtworks(apiKey = API_KEY, title = query, size = 5) // Limit results to 5 for suggestions
+    }
+
 }

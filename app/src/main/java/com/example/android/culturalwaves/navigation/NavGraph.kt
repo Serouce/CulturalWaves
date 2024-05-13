@@ -41,7 +41,7 @@ fun SetupNavGraph(navController: NavHostController) {
             FavoriteScreen()
         }
         composable(Screen.SearchScreen.route) {
-            SearchScreen()
+            SearchScreen(navController = navController)
         }
         composable(Screen.CategoryScreen.route) {
             CategoryScreen()
