@@ -39,12 +39,17 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
-
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import com.example.android.culturalwaves.data.entities.FavoriteArtwork
+import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 
 
 @Composable
 fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val artViewModel: ArtViewModel = koinViewModel()
+    val favoriteViewModel: FavoriteViewModel = koinViewModel()
     val artworks: LazyPagingItems<Artwork> = artViewModel.artworks.collectAsLazyPagingItems()
 
     MaterialTheme {
@@ -62,13 +67,28 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
             ) {
                 items(artworks.itemCount) { index ->
                     artworks[index]?.let { artwork ->
+                        val isFavorite = remember { mutableStateOf(false) }
+
+                        LaunchedEffect(key1 = artwork.objectId) {
+                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
+                        }
+
                         CardTemplate(
                             imageUrl = artwork.imageUrl ?: "",
                             title = artwork.title ?: "No Title",
                             artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
                             objectId = artwork.objectId ?: 0,
-                            isFavorite = false,
-                            onFavoriteClick = { /* TODO: Handle favorite */ },
+                            isFavorite = isFavorite.value,
+                            onFavoriteClick = {
+                                if (isFavorite.value) {
+                                    artwork.objectId?.let { id ->
+                                        favoriteViewModel.removeFavorite(FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", ""))
+                                    }
+                                } else {
+                                    favoriteViewModel.addFavorite(FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", ""))
+                                }
+                                isFavorite.value = !isFavorite.value
+                            },
                             onCardClick = onArtworkSelected
                         )
                     }

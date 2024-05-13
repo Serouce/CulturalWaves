@@ -34,15 +34,17 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.navigation.Screen
 import com.example.android.culturalwaves.ui.components.CardTemplate
+import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import com.example.android.culturalwaves.viewmodel.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
 
 @Composable
-fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewModel = koinViewModel()) {
+fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewModel = koinViewModel(), favoriteViewModel: FavoriteViewModel = koinViewModel()) {
     var searchText by remember { mutableStateOf("") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
     val focusManager = remember { FocusRequester() } // Получаем текущий менеджер фокуса
@@ -104,13 +106,28 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
         LazyColumn {
             items(searchResults.itemCount) { index ->
                 searchResults[index]?.let { artwork ->
+                    val isFavorite = remember { mutableStateOf(false) }
+
+                    LaunchedEffect(key1 = artwork.objectId) {
+                        isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
+                    }
+
                     CardTemplate(
                         imageUrl = artwork.imageUrl ?: "",
                         title = artwork.title ?: "No Title",
                         artist = artwork.people?.joinToString(separator = ", ") { it.name ?: "Unknown" } ?: "Unknown",
                         objectId = artwork.objectId ?: 0,
-                        isFavorite = false,
-                        onFavoriteClick = { /* Handle favorite */ },
+                        isFavorite = isFavorite.value,
+                        onFavoriteClick = {
+                            if (isFavorite.value) {
+                                artwork.objectId?.let { id ->
+                                    favoriteViewModel.removeFavorite(FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", ""))
+                                }
+                            } else {
+                                favoriteViewModel.addFavorite(FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", ""))
+                            }
+                            isFavorite.value = !isFavorite.value
+                        },
                         onCardClick = { objectId ->
                             navController.navigate(Screen.DetailScreen(objectId).createRoute())
                         }

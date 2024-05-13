@@ -2,8 +2,10 @@ package com.example.android.culturalwaves.di
 
 import com.example.android.culturalwaves.repository.ArtRepository
 import com.example.android.culturalwaves.network.RetrofitClient
+import com.example.android.culturalwaves.repository.FavoriteArtRepository
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
+import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import com.example.android.culturalwaves.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -14,7 +16,9 @@ val networkModule = module {
 
 val repositoryModule = module {
     single { ArtRepository(get()) }  // Использует ArtMuseumApiService для создания репозитория
+    single { FavoriteArtRepository(get()) }  // Использует FavoriteArtworkDao для создания репозитория избранного
 }
+
 
 val viewModelModule = module {
     viewModel { ArtViewModel(get()) }  // Использует ArtRepository для создания ViewModel
@@ -27,8 +31,19 @@ val viewModelSearchModule = module {
     viewModel { SearchViewModel(get()) }
 }
 
+val viewModelFavoriteModule = module {
+    viewModel { FavoriteViewModel(get()) }
+}
 
 
 
-// Объединяем все модули в один список для Koin
-val appModules = listOf(networkModule, repositoryModule, viewModelModule, viewModelDetailModule, viewModelSearchModule)
+
+val appModules = listOf(
+    networkModule,
+    databaseModule,
+    repositoryModule,
+    viewModelModule,
+    viewModelDetailModule,
+    viewModelSearchModule,
+    viewModelFavoriteModule
+)
