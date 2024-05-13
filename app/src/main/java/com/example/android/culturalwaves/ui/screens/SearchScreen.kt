@@ -130,6 +130,10 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
                         },
                         onCardClick = { objectId ->
                             navController.navigate(Screen.DetailScreen(objectId).createRoute())
+                        },
+                        onError = {
+                            // Логика обработки ошибки загрузки изображения
+                            // Например, можно удалить карточку из избранного или показать уведомление
                         }
                     )
                 }
@@ -137,9 +141,3 @@ fun SearchScreen(navController: NavHostController, searchViewModel: SearchViewMo
         }
     }
 }
-
-
-
-
-
-// комментарий для проверки веток

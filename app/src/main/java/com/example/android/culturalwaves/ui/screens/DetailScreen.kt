@@ -98,6 +98,7 @@ fun DetailScreen(objectId: Int) {
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Используем ArtworkImage с обработкой ошибок
                 artworkDetail.imageUrl?.let { imageUrl ->
                     ArtworkImage(
                         imageUrl = imageUrl,
@@ -106,7 +107,11 @@ fun DetailScreen(objectId: Int) {
                             .fillMaxWidth()
                             .aspectRatio(1.5f)
                             .clip(RoundedCornerShape(12.dp))
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        onError = {
+                            // Логика обработки ошибки загрузки изображения
+                            // Например, можно показать уведомление или записать лог ошибки
+                        }
                     )
                 }
 
@@ -127,6 +132,7 @@ fun DetailScreen(objectId: Int) {
         }
     }
 }
+
 
 
 

@@ -49,7 +49,11 @@ fun FavoriteScreen() {
                         onFavoriteClick = {
                             favoriteViewModel.removeFavorite(artwork)
                         },
-                        onCardClick = { /* handle card click if needed */ }
+                        onCardClick = { /* handle card click if needed */ },
+                        onError = {
+                            // Логика обработки ошибки загрузки изображения
+                            // Например, можно удалить карточку из избранного или показать уведомление
+                        }
                     )
                 }
             }

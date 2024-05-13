@@ -40,11 +40,69 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 
+
+//@Composable
+//fun MainScreen(onArtworkSelected: (Int) -> Unit) {
+//    val artViewModel: ArtViewModel = koinViewModel()
+//    val favoriteViewModel: FavoriteViewModel = koinViewModel()
+//    val artworks: LazyPagingItems<Artwork> = artViewModel.artworks.collectAsLazyPagingItems()
+//
+//    MaterialTheme {
+//        Scaffold { padding ->
+//            LazyVerticalGrid(
+//                columns = GridCells.Adaptive(minSize = 180.dp),
+//                contentPadding = PaddingValues(
+//                    top = padding.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+//                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+//                    start = 16.dp,
+//                    end = 16.dp
+//                ),
+//                verticalArrangement = Arrangement.spacedBy(16.dp),
+//                horizontalArrangement = Arrangement.spacedBy(16.dp)
+//            ) {
+//                items(artworks.itemCount) { index ->
+//                    artworks[index]?.let { artwork ->
+//                        val isFavorite = remember { mutableStateOf(false) }
+//
+//                        LaunchedEffect(key1 = artwork.objectId) {
+//                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
+//                        }
+//
+//                        CardTemplate(
+//                            imageUrl = artwork.imageUrl ?: "",
+//                            title = artwork.title ?: "No Title",
+//                            artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+//                            objectId = artwork.objectId ?: 0,
+//                            isFavorite = isFavorite.value,
+//                            onFavoriteClick = {
+//                                if (isFavorite.value) {
+//                                    artwork.objectId?.let { id ->
+//                                        favoriteViewModel.removeFavorite(FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", ""))
+//                                    }
+//                                } else {
+//                                    favoriteViewModel.addFavorite(FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", ""))
+//                                }
+//                                isFavorite.value = !isFavorite.value
+//                            },
+//                            onCardClick = onArtworkSelected,
+//                            onError =
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//
+//
 
 @Composable
 fun MainScreen(onArtworkSelected: (Int) -> Unit) {
@@ -68,19 +126,21 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                 items(artworks.itemCount) { index ->
                     artworks[index]?.let { artwork ->
                         val isFavorite = remember { mutableStateOf(false) }
+                        var showCard by remember { mutableStateOf(true) } // Добавлен флаг для управления видимостью карточки
 
                         LaunchedEffect(key1 = artwork.objectId) {
                             isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
                         }
 
-                        CardTemplate(
-                            imageUrl = artwork.imageUrl ?: "",
-                            title = artwork.title ?: "No Title",
-                            artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
-                            objectId = artwork.objectId ?: 0,
-                            isFavorite = isFavorite.value,
-                            onFavoriteClick = {
-                                if (isFavorite.value) {
+                        if (showCard) { // Проверяем флаг перед отображением карточки
+                            CardTemplate(
+                                imageUrl = artwork.imageUrl ?: "",
+                                title = artwork.title ?: "No Title",
+                                artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+                                objectId = artwork.objectId ?: 0,
+                                isFavorite = isFavorite.value,
+                                onFavoriteClick = {
+                                    if (isFavorite.value) {
                                     artwork.objectId?.let { id ->
                                         favoriteViewModel.removeFavorite(FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", ""))
                                     }
@@ -88,14 +148,17 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                                     favoriteViewModel.addFavorite(FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", ""))
                                 }
                                 isFavorite.value = !isFavorite.value
-                            },
-                            onCardClick = onArtworkSelected
-                        )
+                                },
+                                onCardClick = onArtworkSelected,
+                                onError = { showCard = false } // Скрываем карточку при ошибке загрузки изображения
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 
