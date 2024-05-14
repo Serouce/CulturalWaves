@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.android.culturalwaves.model.Artwork
-import com.example.android.culturalwaves.repository.ArtRepository
+import com.example.android.culturalwaves.data.entities.Artwork
+import com.example.android.culturalwaves.domain.repository.ArtRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

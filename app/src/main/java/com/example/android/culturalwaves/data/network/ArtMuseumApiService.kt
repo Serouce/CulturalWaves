@@ -1,7 +1,7 @@
-package com.example.android.culturalwaves.network
+package com.example.android.culturalwaves.data.network
 
-import com.example.android.culturalwaves.model.ArtResponse
-import com.example.android.culturalwaves.model.ArtworkDetailResponse
+import com.example.android.culturalwaves.data.entities.ArtResponse
+import com.example.android.culturalwaves.data.entities.ArtworkDetailResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

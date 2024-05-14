@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.data
+package com.example.android.culturalwaves.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

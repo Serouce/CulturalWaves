@@ -2,11 +2,10 @@ package com.example.android.culturalwaves.ui.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.android.culturalwaves.navigation.Screen
+import com.example.android.culturalwaves.ui.navigation.Screen
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {

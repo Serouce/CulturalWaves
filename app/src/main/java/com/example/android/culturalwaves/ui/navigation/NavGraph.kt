@@ -1,26 +1,17 @@
-package com.example.android.culturalwaves.navigation
+package com.example.android.culturalwaves.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.android.culturalwaves.repository.ArtRepository
 import com.example.android.culturalwaves.ui.screens.CategoryScreen
 import com.example.android.culturalwaves.ui.screens.DetailScreen
 import com.example.android.culturalwaves.ui.screens.FavoriteScreen
 import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.screens.SearchScreen
-import com.example.android.culturalwaves.viewmodel.ArtViewModel
-import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
-import com.example.android.culturalwaves.viewmodel.CategoryViewModel
-import org.koin.androidx.compose.getViewModel
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 
 @Composable

@@ -1,7 +1,7 @@
 package com.example.android.culturalwaves.di
 
 import androidx.room.Room
-import com.example.android.culturalwaves.data.AppDatabase
+import com.example.android.culturalwaves.data.database.AppDatabase
 import org.koin.dsl.module
 
 val databaseModule = module {

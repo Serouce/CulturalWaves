@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.network
+package com.example.android.culturalwaves.data.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

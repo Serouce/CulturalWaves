@@ -1,20 +1,13 @@
-package com.example.android.culturalwaves.repository
+package com.example.android.culturalwaves.domain.repository
 
 import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
-import com.example.android.culturalwaves.model.ArtResponse
-import com.example.android.culturalwaves.model.Artwork
-import com.example.android.culturalwaves.model.ArtworkDetailResponse
-import com.example.android.culturalwaves.network.ArtMuseumApiService
-import com.example.android.culturalwaves.network.RetrofitClient
+import com.example.android.culturalwaves.data.entities.ArtResponse
+import com.example.android.culturalwaves.data.entities.Artwork
+import com.example.android.culturalwaves.data.entities.ArtworkDetailResponse
+import com.example.android.culturalwaves.data.network.ArtMuseumApiService
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Response
-
 
 private const val API_KEY = "457bf8b1-0c12-46bd-8f80-bd7ff41905d6"
 

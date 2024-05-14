@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.navigation
+package com.example.android.culturalwaves.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*

@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.model
+package com.example.android.culturalwaves.data.entities
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,8 +1,8 @@
 package com.example.android.culturalwaves.di
 
-import com.example.android.culturalwaves.repository.ArtRepository
-import com.example.android.culturalwaves.network.RetrofitClient
-import com.example.android.culturalwaves.repository.FavoriteArtRepository
+import com.example.android.culturalwaves.domain.repository.ArtRepository
+import com.example.android.culturalwaves.data.network.RetrofitClient
+import com.example.android.culturalwaves.domain.repository.FavoriteArtRepository
 import com.example.android.culturalwaves.viewmodel.ArtViewModel
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel

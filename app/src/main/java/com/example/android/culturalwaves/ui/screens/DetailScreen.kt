@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,8 +35,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import com.example.android.culturalwaves.model.Artist
-import com.example.android.culturalwaves.model.ImageDetail
+import com.example.android.culturalwaves.data.entities.Artist
+import com.example.android.culturalwaves.data.entities.ImageDetail
 import com.example.android.culturalwaves.ui.components.ArtworkImage
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import org.koin.androidx.compose.koinViewModel

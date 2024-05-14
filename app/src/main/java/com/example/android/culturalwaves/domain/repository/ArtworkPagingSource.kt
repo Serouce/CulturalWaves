@@ -1,9 +1,9 @@
-package com.example.android.culturalwaves.repository
+package com.example.android.culturalwaves.domain.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.android.culturalwaves.model.Artwork
-import com.example.android.culturalwaves.network.ArtMuseumApiService
+import com.example.android.culturalwaves.data.entities.Artwork
+import com.example.android.culturalwaves.data.network.ArtMuseumApiService
 import retrofit2.HttpException
 import java.io.IOException
 

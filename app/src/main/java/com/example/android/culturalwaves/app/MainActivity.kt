@@ -11,12 +11,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.android.culturalwaves.navigation.SetupNavGraph
+import com.example.android.culturalwaves.ui.navigation.SetupNavGraph
 import com.example.android.culturalwaves.ui.components.BottomNavigationBar
-import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
-import com.example.android.culturalwaves.viewmodel.ArtViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,9 +34,6 @@ class MainActivity : ComponentActivity() {
                             SetupNavGraph(navController = navController)
                         }
                     }
-
-
-
 
                 }
             }

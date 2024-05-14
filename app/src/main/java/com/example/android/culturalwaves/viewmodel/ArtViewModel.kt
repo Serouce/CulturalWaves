@@ -2,13 +2,10 @@ package com.example.android.culturalwaves.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.android.culturalwaves.model.Artwork
-import com.example.android.culturalwaves.repository.ArtRepository
-import kotlinx.coroutines.flow.Flow
+import com.example.android.culturalwaves.data.entities.Artwork
+import com.example.android.culturalwaves.domain.repository.ArtRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
