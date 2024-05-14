@@ -3,7 +3,7 @@ package com.example.android.culturalwaves.di
 import com.example.android.culturalwaves.domain.repository.ArtRepository
 import com.example.android.culturalwaves.data.network.RetrofitClient
 import com.example.android.culturalwaves.domain.repository.FavoriteArtRepository
-import com.example.android.culturalwaves.viewmodel.ArtViewModel
+import com.example.android.culturalwaves.viewmodel.MainViewModel
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import com.example.android.culturalwaves.viewmodel.SearchViewModel
@@ -21,7 +21,7 @@ val repositoryModule = module {
 
 
 val viewModelModule = module {
-    viewModel { ArtViewModel(get()) }  // Использует ArtRepository для создания ViewModel
+    viewModel { MainViewModel(get()) }  // Использует ArtRepository для создания ViewModel
 }
 val viewModelDetailModule = module {
     viewModel { (objectId: Int) -> ArtworkDetailViewModel(get(), objectId) }

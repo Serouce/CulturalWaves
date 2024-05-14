@@ -40,8 +40,14 @@ class ArtRepository(private val apiService: ArtMuseumApiService) {
             null // Логирование или дополнительная обработка исключений
         }
     }
-    suspend fun fetchArtworksForSuggestions(query: String): Response<ArtResponse> {
-        return apiService.fetchArtworks(apiKey = API_KEY, title = query, size = 5) // Limit results to 5 for suggestions
-    }
 
+    suspend fun fetchArtworksForSuggestions(query: String): Response<ArtResponse> {
+        return apiService.fetchArtworks(
+            apiKey = API_KEY,
+            title = query,
+            size = 5
+        ) // Limit results to 5 for suggestions
+    }
 }
+
+

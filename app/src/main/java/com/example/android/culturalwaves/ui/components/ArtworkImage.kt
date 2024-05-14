@@ -26,47 +26,6 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.android.culturalwaves.R
 
 
-//@Composable
-//fun ArtworkImage(
-//    imageUrl: String,
-//    contentDescription: String?,
-//    modifier: Modifier = Modifier
-//) {
-//    SubcomposeAsyncImage(
-//        model = imageUrl,
-//        contentDescription = contentDescription,
-//        modifier = modifier
-//            .fillMaxWidth() // Устанавливаем ширину изображения на максимальную доступную
-//            .aspectRatio(1f), // Сохраняем соотношение сторон, можно адаптировать под нужные пропорции
-//        contentScale = ContentScale.Crop,
-//        loading = {
-//            Box(modifier = Modifier.matchParentSize()) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.align(Alignment.Center),
-//                    color = MaterialTheme.colorScheme.primary
-//                )
-//            }
-//        },
-//        error = {
-//            Box(modifier = Modifier.matchParentSize()) {
-//                Icon(
-//                    imageVector = Icons.Filled.Close,
-//                    contentDescription = "Ошибка загрузки",
-//                    modifier = Modifier.align(Alignment.Center),
-//                    tint = MaterialTheme.colorScheme.error
-//                )
-//                Text(
-//                    "Ошибка загрузки",
-//                    color = MaterialTheme.colorScheme.error,
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    modifier = Modifier.align(Alignment.Center) // Правильно центрируем текст внутри Box
-//                )
-//            }
-//        }
-//    )
-//}
-//
-
 @Composable
 fun ArtworkImage(
     imageUrl: String,

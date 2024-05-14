@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -127,7 +128,7 @@ fun CardTemplate(
             .size(width = cardWidth, height = cardHeight)
             .clickable { onCardClick(objectId) }
             .padding(10.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -166,8 +167,12 @@ fun CardTemplate(
                 onClick = onFavoriteClick,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(48.dp)
+                    .size(36.dp) // Уменьшение размера иконки
                     .padding(8.dp)
+                    .background(
+                        color = Color.Black.copy(alpha = 0.4f), // Полупрозрачный фон
+                        shape = CircleShape
+                    )
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
