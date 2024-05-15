@@ -94,39 +94,70 @@ import org.koin.androidx.compose.koinViewModel
 //}
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen() {
     val quizViewModel: QuizViewModel = koinViewModel()
-    var question by remember { mutableStateOf("") }
-    val result by quizViewModel.quizResult.collectAsState()
+    val quizQuestion by quizViewModel.quizQuestion.collectAsState()
+    val quizResult by quizViewModel.quizResult.collectAsState()
+    var userAnswer by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Генерация текста", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Квиз по культуре") },
+            )
+        },
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = quizQuestion,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
-        OutlinedTextField(
-            value = question,
-            onValueChange = { question = it },
-            label = { Text("Введите текст") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = userAnswer,
+                    onValueChange = { userAnswer = it },
+                    label = { Text("Ваш ответ") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        Button(
-            onClick = {
-                quizViewModel.generateQuizQuestion(question)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        quizViewModel.checkQuizAnswer(quizQuestion, userAnswer)
+                    }
+                ) {
+                    Text("Проверить ответ")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Результат: $quizResult",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
+                        userAnswer = ""
+                    }
+                ) {
+                    Text("Новый вопрос")
+                }
             }
-        ) {
-            Text("Сгенерировать текст")
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Ответ: $result", style = MaterialTheme.typography.bodyLarge)
-    }
+    )
 }

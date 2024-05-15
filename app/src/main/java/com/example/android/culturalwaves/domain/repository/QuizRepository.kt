@@ -11,6 +11,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
+//class QuizRepository {
+//    private val generativeModel: GenerativeModel = GenerativeModelInitializer.initializeModel()
+//
+//    suspend fun generateQuizQuestion(prompt: String): String {
+//        val inputContent = content { text(prompt) }
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val response = generativeModel.generateContent(inputContent)
+//                response.text
+//            } catch (e: Exception) {
+//                "Error: ${e.message}"
+//            }.toString()
+//        }
+//    }
+//}
+//
+//
+
+
 class QuizRepository {
     private val generativeModel: GenerativeModel = GenerativeModelInitializer.initializeModel()
 
@@ -25,6 +44,17 @@ class QuizRepository {
             }.toString()
         }
     }
-}
 
+    suspend fun checkQuizAnswer(question: String, userAnswer: String): String {
+        val inputContent = content { text("$question\nUser answer: $userAnswer\nIs this correct?") }
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = generativeModel.generateContent(inputContent)
+                response.text
+            } catch (e: Exception) {
+                "Error: ${e.message}"
+            }.toString()
+        }
+    }
+}
 
