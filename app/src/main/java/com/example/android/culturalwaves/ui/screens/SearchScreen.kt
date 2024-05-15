@@ -10,14 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
@@ -105,8 +108,9 @@ fun SearchScreen(
                     )
                 )
 
-                // Ограничение количества отображаемых предложений
                 val limitedSuggestions = suggestions.take(3)
+
+
 
                 // Отображение предложений ниже текстового поля
                 if (limitedSuggestions.isNotEmpty() && searchText.isNotEmpty()) {
@@ -182,6 +186,8 @@ fun SearchScreen(
         }
     )
 }
+
+
 
 
 

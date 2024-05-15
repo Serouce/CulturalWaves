@@ -56,13 +56,17 @@ android {
 
 dependencies {
 
+    implementation(libs.common)
     val nav_version = "2.7.7"
     val room_version = "2.6.1"
 
 
+    //Gemini
+    implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
 
 
-    //Room
+
+
     //Room
     implementation("androidx.room:room-runtime:$room_version")
     kapt ("androidx.room:room-compiler:$room_version")
