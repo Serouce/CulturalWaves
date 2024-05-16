@@ -1,12 +1,11 @@
 package com.example.android.culturalwaves.data.network
 
-import com.example.android.culturalwaves.data.entities.models.GenerateContentRequest
-import com.example.android.culturalwaves.data.entities.models.GenerateContentResponse
+import com.example.android.culturalwaves.data.entities.GenerateContentRequest
+import com.example.android.culturalwaves.data.entities.GenerateContentResponse
 import com.google.ai.client.generativeai.GenerativeModel
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface GeminiApiService {
@@ -18,13 +17,3 @@ interface GeminiApiService {
 }
 
 
-class GenerativeModelInitializer {
-    companion object {
-        fun initializeModel(): GenerativeModel {
-            return GenerativeModel(
-                modelName = "gemini-pro",
-                apiKey = "AIzaSyCyjwBNUDGV9sJayyjUsk2XeJPJqn_5Zww"
-            )
-        }
-    }
-}

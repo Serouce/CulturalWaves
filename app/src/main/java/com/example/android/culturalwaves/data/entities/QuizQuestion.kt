@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.data.entities.models
+package com.example.android.culturalwaves.data.entities
 
 data class GenerateContentRequest(
     val prompt: String,

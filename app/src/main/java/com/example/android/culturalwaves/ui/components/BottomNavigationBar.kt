@@ -13,7 +13,7 @@ fun BottomNavigationBar(navController: NavHostController) {
         Screen.MainScreen,
         Screen.FavoriteScreen,
         Screen.SearchScreen,
-        Screen.CategoryScreen
+        Screen.QuizScreen
     )
 
     NavigationBar { // Использование NavigationBar из Material Design 3

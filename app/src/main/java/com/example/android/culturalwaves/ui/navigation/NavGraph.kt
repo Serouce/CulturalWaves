@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.android.culturalwaves.ui.screens.CategoryScreen
+import com.example.android.culturalwaves.ui.screens.QuizScreen
 import com.example.android.culturalwaves.ui.screens.DetailScreen
 import com.example.android.culturalwaves.ui.screens.FavoriteScreen
 import com.example.android.culturalwaves.ui.screens.MainScreen
@@ -34,8 +34,8 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(Screen.SearchScreen.route) {
             SearchScreen(navController = navController)
         }
-        composable(Screen.CategoryScreen.route) {
-            CategoryScreen()
+        composable(Screen.QuizScreen.route) {
+            QuizScreen()
         }
         composable(
             route = Screen.DetailScreen(0).route, // Используем шаблонный route для подстановки

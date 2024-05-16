@@ -8,7 +8,7 @@ sealed class Screen(val route: String) {
     object MainScreen : Screen("main_screen")
     object FavoriteScreen : Screen("favorite_screen")
     object SearchScreen : Screen("search_screen")
-    object CategoryScreen : Screen("category_screen")
+    object QuizScreen : Screen("category_screen")
     class DetailScreen(val objectId: Int) : Screen("detail_screen/{objectId}") {
         fun createRoute() = "detail_screen/$objectId"
     }
@@ -18,7 +18,7 @@ sealed class Screen(val route: String) {
             is MainScreen -> Icons.Filled.Home
             is FavoriteScreen -> Icons.Filled.Favorite
             is SearchScreen -> Icons.Filled.Search
-            is CategoryScreen -> Icons.Filled.Info
+            is QuizScreen -> Icons.Filled.Info
             else -> throw IllegalArgumentException("No icon for this screen")
         }
 
@@ -27,7 +27,7 @@ sealed class Screen(val route: String) {
             is MainScreen -> "Main"
             is FavoriteScreen -> "Favorites"
             is SearchScreen -> "Search"
-            is CategoryScreen -> "Categories"
+            is QuizScreen -> "Categories"
             else -> throw IllegalArgumentException("No label for this screen")
         }
 }
