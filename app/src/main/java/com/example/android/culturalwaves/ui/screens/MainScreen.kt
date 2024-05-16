@@ -1,6 +1,7 @@
 package com.example.android.culturalwaves.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,12 +24,17 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
@@ -39,8 +45,90 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
+import com.example.android.culturalwaves.ui.components.CategoryCard
+import com.example.android.culturalwaves.utils.CategoryUtils
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
+
+
+//@Composable
+//fun MainScreen(onArtworkSelected: (Int) -> Unit) {
+//    val mainViewModel: MainViewModel = koinViewModel()
+//    val favoriteViewModel: FavoriteViewModel = koinViewModel()
+//    val artworks: LazyPagingItems<Artwork> = mainViewModel.artworks.collectAsLazyPagingItems()
+//    val artworkLoadStates by mainViewModel.artworkLoadStates.collectAsState()
+//
+//    Box(
+//        modifier = Modifier
+//            .background(MaterialTheme.colorScheme.background)
+//            .fillMaxSize()
+//    ) {
+//        Scaffold { padding ->
+//            LazyColumn(
+//                contentPadding = PaddingValues(
+//                    top = padding.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+//                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+//                    start = 16.dp,
+//                    end = 16.dp
+//                ),
+//                verticalArrangement = Arrangement.spacedBy(16.dp),
+//                modifier = Modifier.fillMaxSize()
+//            ) {
+//                items(artworks.itemCount) { index ->
+//                    artworks[index]?.let { artwork ->
+//                        val isFavorite = remember { mutableStateOf(false) }
+//                        val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
+//
+//                        LaunchedEffect(key1 = artwork.objectId) {
+//                            isFavorite.value = favoriteViewModel.isFavorite(
+//                                artwork.objectId ?: 0)
+//                        }
+//
+//                        if (showCard) {
+//                            Box(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .wrapContentSize(Alignment.Center)
+//                            ) {
+//                                CardTemplate(
+//                                    imageUrl = artwork.imageUrl ?: "",
+//                                    title = artwork.title ?: "No Title",
+//                                    artist = artwork.people?.joinToString(separator = ", ")
+//                                    { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+//                                    objectId = artwork.objectId ?: 0,
+//                                    isFavorite = isFavorite.value,
+//                                    onFavoriteClick = {
+//                                        if (isFavorite.value) {
+//                                            artwork.objectId?.let { id ->
+//                                                favoriteViewModel.removeFavorite(FavoriteArtwork(
+//                                                    id, artwork.title ?: "",
+//                                                    artwork.imageUrl ?: "",
+//                                                    "")
+//                                                )
+//                                            }
+//                                        } else {
+//                                            favoriteViewModel.addFavorite(FavoriteArtwork(
+//                                                artwork.objectId ?: 0, artwork.title ?: "",
+//                                                artwork.imageUrl ?: "", ""))
+//                                        }
+//                                        isFavorite.value = !isFavorite.value
+//                                    },
+//                                    onCardClick = onArtworkSelected,
+//                                    onError = { mainViewModel.setArtworkLoadState(
+//                                        artwork.objectId ?: 0, false) }, // Обновление состояния в ViewModel
+//                                    cardWidth = 350.dp, // Увеличение ширины карточки
+//                                    cardHeight = 350.dp // Увеличение высоты карточки
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 
 @Composable
@@ -49,6 +137,7 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val favoriteViewModel: FavoriteViewModel = koinViewModel()
     val artworks: LazyPagingItems<Artwork> = mainViewModel.artworks.collectAsLazyPagingItems()
     val artworkLoadStates by mainViewModel.artworkLoadStates.collectAsState()
+    val currentClassification by mainViewModel.currentClassification.collectAsState()
 
     Box(
         modifier = Modifier
@@ -66,14 +155,30 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
+                // Добавляем горизонтальный список для категорий
+                item {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    ) {
+                        items(CategoryUtils.getCategories()) { (category, imageRes) ->
+                            CategoryCard(
+                                category = category,
+                                imageRes = imageRes,
+                                isSelected = currentClassification == category,
+                                onClick = { mainViewModel.setClassification(category) }
+                            )
+                        }
+                    }
+                }
+
                 items(artworks.itemCount) { index ->
                     artworks[index]?.let { artwork ->
                         val isFavorite = remember { mutableStateOf(false) }
                         val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
 
                         LaunchedEffect(key1 = artwork.objectId) {
-                            isFavorite.value = favoriteViewModel.isFavorite(
-                                artwork.objectId ?: 0)
+                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
                         }
 
                         if (showCard) {
@@ -85,31 +190,27 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                                 CardTemplate(
                                     imageUrl = artwork.imageUrl ?: "",
                                     title = artwork.title ?: "No Title",
-                                    artist = artwork.people?.joinToString(separator = ", ")
-                                    { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+                                    artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
                                     objectId = artwork.objectId ?: 0,
                                     isFavorite = isFavorite.value,
                                     onFavoriteClick = {
                                         if (isFavorite.value) {
                                             artwork.objectId?.let { id ->
-                                                favoriteViewModel.removeFavorite(FavoriteArtwork(
-                                                    id, artwork.title ?: "",
-                                                    artwork.imageUrl ?: "",
-                                                    "")
+                                                favoriteViewModel.removeFavorite(
+                                                    FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "")
                                                 )
                                             }
                                         } else {
-                                            favoriteViewModel.addFavorite(FavoriteArtwork(
-                                                artwork.objectId ?: 0, artwork.title ?: "",
-                                                artwork.imageUrl ?: "", ""))
+                                            favoriteViewModel.addFavorite(
+                                                FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "")
+                                            )
                                         }
                                         isFavorite.value = !isFavorite.value
                                     },
                                     onCardClick = onArtworkSelected,
-                                    onError = { mainViewModel.setArtworkLoadState(
-                                        artwork.objectId ?: 0, false) }, // Обновление состояния в ViewModel
-                                    cardWidth = 350.dp, // Увеличение ширины карточки
-                                    cardHeight = 350.dp // Увеличение высоты карточки
+                                    onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
+                                    cardWidth = 350.dp,
+                                    cardHeight = 350.dp
                                 )
                             }
                         }
@@ -119,5 +220,3 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
         }
     }
 }
-
-
