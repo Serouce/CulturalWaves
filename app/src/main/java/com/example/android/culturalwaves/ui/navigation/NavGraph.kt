@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.android.culturalwaves.ui.screens.QuizScreen
 import com.example.android.culturalwaves.ui.screens.DetailScreen
 import com.example.android.culturalwaves.ui.screens.FavoriteScreen
+import com.example.android.culturalwaves.ui.screens.FullImageScreen
 import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.screens.SearchScreen
 
@@ -46,3 +47,6 @@ fun SetupNavGraph(navController: NavHostController) {
         }
     }
 }
+
+
+

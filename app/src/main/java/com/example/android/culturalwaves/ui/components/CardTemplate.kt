@@ -28,11 +28,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
+import com.example.android.culturalwaves.ui.theme.fontFamily
 import com.example.android.culturalwaves.utils.StringUtils
 
 
@@ -117,19 +121,19 @@ fun CardTemplate(
     onFavoriteClick: () -> Unit,
     onCardClick: (Int) -> Unit,
     onError: () -> Unit, // Добавлен параметр onError
-    cardWidth: Dp = 330.dp,
-    cardHeight: Dp = 300.dp
+    cardWidth: Dp = 264.dp,  // Уменьшение ширины
+    cardHeight: Dp = 264.dp  // Уменьшение высоты
 ) {
-    val displayedTitle = remember(title) { StringUtils.truncateString(title, 40) }
-    val displayedArtist = remember(artist) { StringUtils.truncateString(artist, 25) }
+    val displayedTitle = remember(title) { StringUtils.truncateString(title, 32) } // Уменьшение длины заголовка
+    val displayedArtist = remember(artist) { StringUtils.truncateString(artist, 20) } // Уменьшение длины имени художника
 
     Card(
         modifier = Modifier
             .size(width = cardWidth, height = cardHeight)
             .clickable { onCardClick(objectId) }
-            .padding(10.dp),
+            .padding(8.dp), // Уменьшение отступа
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp) // Уменьшение высоты тени
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             ArtworkImage(
@@ -143,7 +147,7 @@ fun CardTemplate(
                     .align(Alignment.BottomStart)
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)),
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)), // Уменьшение интенсивности градиента
                             startY = 50f
                         )
                     )
@@ -152,13 +156,13 @@ fun CardTemplate(
             ) {
                 Text(
                     text = displayedTitle,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleSmall, // Уменьшение размера текста
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
                 )
                 Text(
                     text = displayedArtist,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall, // Уменьшение размера текста
                     color = Color.White.copy(alpha = 0.7f),
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                 )
@@ -167,8 +171,8 @@ fun CardTemplate(
                 onClick = onFavoriteClick,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(36.dp) // Уменьшение размера иконки
-                    .padding(8.dp)
+                    .size(28.dp) // Уменьшение размера иконки
+                    .padding(4.dp) // Уменьшение отступа
                     .background(
                         color = Color.Black.copy(alpha = 0.4f), // Полупрозрачный фон
                         shape = CircleShape
@@ -183,6 +187,5 @@ fun CardTemplate(
         }
     }
 }
-
 
 

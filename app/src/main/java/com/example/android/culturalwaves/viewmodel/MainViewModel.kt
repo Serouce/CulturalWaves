@@ -68,5 +68,15 @@ class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
     fun setClassification(classification: String?) {
         _currentClassification.value = classification
     }
+
+    // Функция для переключения классификации и сброса фильтра при повторном нажатии
+    fun toggleClassification(classification: String) {
+        if (_currentClassification.value == classification) {
+            _currentClassification.value = null // Сбросить фильтр
+        } else {
+            _currentClassification.value = classification // Установить новую классификацию
+        }
+    }
 }
+
 

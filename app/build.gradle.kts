@@ -62,7 +62,7 @@ android {
 
 dependencies {
 
-    implementation(libs.common)
+
     val nav_version = "2.7.7"
     val room_version = "2.6.1"
 
@@ -70,6 +70,9 @@ dependencies {
     //Gemini
     implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
 
+
+    //fonts
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
 
 
 

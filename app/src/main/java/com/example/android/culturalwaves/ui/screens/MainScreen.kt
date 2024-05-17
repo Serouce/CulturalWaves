@@ -31,10 +31,14 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
@@ -42,15 +46,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import com.example.android.culturalwaves.R
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.ui.components.CategoryCard
 import com.example.android.culturalwaves.utils.CategoryUtils
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 //@Composable
@@ -138,14 +147,32 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val artworks: LazyPagingItems<Artwork> = mainViewModel.artworks.collectAsLazyPagingItems()
     val artworkLoadStates by mainViewModel.artworkLoadStates.collectAsState()
     val currentClassification by mainViewModel.currentClassification.collectAsState()
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
+    Column(
+        modifier = Modifier.fillMaxSize() // Убираем фоновый цвет
     ) {
-        Scaffold { padding ->
+        Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .alpha(0.7f), // Устанавливаем полупрозрачность
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
+                }
+            }
+        ) { padding ->
             LazyColumn(
+                state = listState,
                 contentPadding = PaddingValues(
                     top = padding.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
                     bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
@@ -166,7 +193,7 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                                 category = category,
                                 imageRes = imageRes,
                                 isSelected = currentClassification == category,
-                                onClick = { mainViewModel.setClassification(category) }
+                                onClick = { mainViewModel.toggleClassification(category) }
                             )
                         }
                     }
@@ -209,8 +236,8 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                                     },
                                     onCardClick = onArtworkSelected,
                                     onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
-                                    cardWidth = 350.dp,
-                                    cardHeight = 350.dp
+                                    cardWidth = 300.dp,
+                                    cardHeight = 300.dp
                                 )
                             }
                         }

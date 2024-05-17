@@ -63,7 +63,7 @@ fun SearchScreen(
             SmallTopAppBar(
                 title = { Text("Search", style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    containerColor = Color.Transparent,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )

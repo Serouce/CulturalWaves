@@ -2,6 +2,7 @@ package com.example.android.culturalwaves.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -79,59 +80,44 @@ private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
     secondary = DarkSecondary,
     tertiary = DarkTertiary,
-    background = DarkBackgroundStart,
-    surface = DarkBackgroundEnd
+    background = Color.Transparent,
+    surface = Color.Transparent,
+    outline = Color.LightGray,
+
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = LightPrimary,
     secondary = LightSecondary,
     tertiary = LightTertiary,
-    background = LightBackgroundStart,
-    surface = LightBackgroundEnd
+    background = Color.Transparent,
+    surface = Color.Transparent,
+    outline = Color.DarkGray // Пример цвета для светлой темы
+
 )
-
-
 
 @Composable
 fun CulturalWavesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val gradientType = if (darkTheme) GradientType.DARK_THEME else GradientType.LIGHT_THEME
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            setUpEdgeToEdge(view, darkTheme)
         }
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
         typography = Typography,
         content = {
             Box(
                 modifier = Modifier
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = if (darkTheme) {
-                                listOf(DarkBackgroundStart, DarkBackgroundEnd)
-                            } else {
-                                listOf(LightBackgroundStart, LightBackgroundEnd)
-                            }
-                        )
-                    )
+                    .background(getGradientBrush(gradientType))
                     .fillMaxSize()
             ) {
                 content()
@@ -139,4 +125,15 @@ fun CulturalWavesTheme(
         }
     )
 }
+
+private fun setUpEdgeToEdge(view: View, darkTheme: Boolean) {
+    val window = (view.context as Activity).window
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    window.statusBarColor = Color.Transparent.toArgb()
+    window.navigationBarColor = Color.Transparent.toArgb()
+    val controller = WindowCompat.getInsetsController(window, view)
+    controller.isAppearanceLightStatusBars = !darkTheme
+    controller.isAppearanceLightNavigationBars = !darkTheme
+}
+
 
