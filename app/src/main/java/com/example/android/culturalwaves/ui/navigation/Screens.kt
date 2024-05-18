@@ -35,5 +35,3 @@ sealed class Screen(val route: String) {
             else -> throw IllegalArgumentException("No label for this screen")
         }
 }
-
-

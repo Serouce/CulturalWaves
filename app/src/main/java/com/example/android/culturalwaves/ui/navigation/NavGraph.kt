@@ -10,9 +10,10 @@ import androidx.navigation.navArgument
 import com.example.android.culturalwaves.ui.screens.QuizScreen
 import com.example.android.culturalwaves.ui.screens.DetailScreen
 import com.example.android.culturalwaves.ui.screens.FavoriteScreen
-import com.example.android.culturalwaves.ui.screens.FullImageScreen
 import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.screens.SearchScreen
+
+
 
 
 @Composable
@@ -43,10 +44,8 @@ fun SetupNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("objectId") { type = NavType.IntType })
         ) { backStackEntry ->
             val objectId = backStackEntry.arguments?.getInt("objectId") ?: return@composable
-            DetailScreen(objectId)
+            DetailScreen(navController, objectId)
         }
     }
 }
-
-
 

@@ -67,6 +67,14 @@ dependencies {
     val room_version = "2.6.1"
 
 
+
+
+
+
+
+
+    implementation("com.google.accompanist:accompanist-coil:0.15.0")
+
     //Gemini
     implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
 

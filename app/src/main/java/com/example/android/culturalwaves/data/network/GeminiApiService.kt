@@ -2,7 +2,6 @@ package com.example.android.culturalwaves.data.network
 
 import com.example.android.culturalwaves.data.entities.GenerateContentRequest
 import com.example.android.culturalwaves.data.entities.GenerateContentResponse
-import com.google.ai.client.generativeai.GenerativeModel
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header

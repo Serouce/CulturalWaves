@@ -1,6 +1,7 @@
 package com.example.android.culturalwaves.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -47,76 +48,17 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.android.culturalwaves.data.entities.Artist
 import com.example.android.culturalwaves.data.entities.ImageDetail
 import com.example.android.culturalwaves.ui.components.ArtworkImage
+import com.example.android.culturalwaves.ui.components.ZoomableImageScreen
 import com.example.android.culturalwaves.ui.navigation.Screen
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DetailScreen(objectId: Int) {
-    val viewModel: ArtworkDetailViewModel = koinViewModel { parametersOf(objectId) }
-    val artworkDetailState = viewModel.artworkDetails.collectAsState()
-
-    artworkDetailState.value?.let { artworkDetail ->
-        Scaffold { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(WindowInsets.navigationBars.asPaddingValues())
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Заголовок
-                Text(
-                    text = artworkDetail.title ?: "Artwork Details",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .background(MaterialTheme.colorScheme.background)
-                )
-
-                // Изображение
-                artworkDetail.imageUrl?.let { imageUrl ->
-                    ArtworkImage(
-                        imageUrl = imageUrl,
-                        contentDescription = artworkDetail.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1.5f)
-                            .clip(RoundedCornerShape(12.dp))
-                            .padding(horizontal = 16.dp),
-                        onError = {
-                            // Логика обработки ошибки загрузки изображения
-                            // Например, можно показать уведомление или записать лог ошибки
-                        },
-                    )
-                }
-
-                // Описание и другие детали
-                SimpleDetailSection("Description:", artworkDetail.description)
-                SimpleDetailSection("Technique:", artworkDetail.technique)
-                SimpleDetailSection("Provenance:", artworkDetail.provenance)
-                SimpleDetailSection("Period:", artworkDetail.period)
-                SimpleDetailSection("Dimensions:", artworkDetail.dimensions)
-
-                ArtistSection(artworkDetail.people)
-
-                ImageGallery(artworkDetail.images)
-            }
-        }
-    } ?: run {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    }
-}
 
 @Composable
 fun SimpleDetailSection(label: String, content: String?) {
@@ -185,6 +127,75 @@ fun ImageThumbnail(imageDetail: ImageDetail) {
 }
 
 
+@Composable
+fun DetailScreen(navController: NavHostController, objectId: Int) {
+    val viewModel: ArtworkDetailViewModel = koinViewModel { parametersOf(objectId) }
+    val artworkDetailState by viewModel.artworkDetails.collectAsState()
+
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedImageUrl by remember { mutableStateOf<String?>(null) }
+
+    artworkDetailState?.let { artworkDetail ->
+        Scaffold { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(WindowInsets.navigationBars.asPaddingValues())
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Заголовок
+                Text(
+                    text = artworkDetail.title ?: "Artwork Details",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(MaterialTheme.colorScheme.background)
+                )
+
+                // Изображение
+                artworkDetail.imageUrl?.let { imageUrl ->
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUrl),
+                        contentDescription = artworkDetail.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1.5f)
+                            .clip(RoundedCornerShape(12.dp))
+                            .padding(horizontal = 16.dp)
+                            .clickable {
+                                selectedImageUrl = imageUrl
+                                showDialog = true
+                            }
+                    )
+                }
+
+                // Описание и другие детали
+                SimpleDetailSection("Description:", artworkDetail.description)
+                SimpleDetailSection("Technique:", artworkDetail.technique)
+                SimpleDetailSection("Provenance:", artworkDetail.provenance)
+                SimpleDetailSection("Period:", artworkDetail.period)
+                SimpleDetailSection("Dimensions:", artworkDetail.dimensions)
+
+                ArtistSection(artworkDetail.people)
+
+                ImageGallery(artworkDetail.images)
+            }
+        }
+    } ?: run {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
+
+    selectedImageUrl?.let { imageUrl ->
+        if (showDialog) {
+            ZoomableImageScreen(imageUrl = imageUrl, onDismissRequest = { showDialog = false })
+        }
+    }
+}
 
 
 
