@@ -6,24 +6,6 @@ import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-//class QuizRepository {
-//    private val generativeModel: GenerativeModel = GenerativeModelInitializer.initializeModel()
-//
-//    suspend fun generateQuizQuestion(prompt: String): String {
-//        val inputContent = content { text(prompt) }
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val response = generativeModel.generateContent(inputContent)
-//                response.text
-//            } catch (e: Exception) {
-//                "Error: ${e.message}"
-//            }.toString()
-//        }
-//    }
-//}
-//
-//
-
 
 class QuizRepository {
     private val generativeModel: GenerativeModel = GenerativeModelInitializer.initializeModel()
@@ -41,7 +23,7 @@ class QuizRepository {
     }
 
     suspend fun checkQuizAnswer(question: String, userAnswer: String): String {
-        val inputContent = content { text("$question\nUser answer: $userAnswer\nIs this correct?") }
+        val inputContent = content { text("$question\nUser answer: $userAnswer\nIs this correct? Provide a brief explanation if the answer is incorrect.") }
         return withContext(Dispatchers.IO) {
             try {
                 val response = generativeModel.generateContent(inputContent)
@@ -52,4 +34,5 @@ class QuizRepository {
         }
     }
 }
+
 

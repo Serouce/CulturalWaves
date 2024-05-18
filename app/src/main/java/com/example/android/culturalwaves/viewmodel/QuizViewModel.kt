@@ -7,19 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-// Пакет: com.example.android.culturalwaves.viewmodel
-
-//class QuizViewModel(private val quizRepository: QuizRepository) : ViewModel() {
-//    private val _quizResult = MutableStateFlow("")
-//    val quizResult: StateFlow<String> = _quizResult
-//
-//    fun generateQuizQuestion(prompt: String) {
-//        viewModelScope.launch {
-//            val result = quizRepository.generateQuizQuestion(prompt)
-//            _quizResult.value = result
-//        }
-//    }
-//}
 
 
 class QuizViewModel(private val quizRepository: QuizRepository) : ViewModel() {
@@ -33,6 +20,7 @@ class QuizViewModel(private val quizRepository: QuizRepository) : ViewModel() {
         viewModelScope.launch {
             val question = quizRepository.generateQuizQuestion(prompt)
             _quizQuestion.value = question
+            _quizResult.value = "" // Сбрасываем результат при генерации нового вопроса
         }
     }
 

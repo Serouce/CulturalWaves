@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,46 +31,6 @@ import com.example.android.culturalwaves.viewmodel.QuizViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
-//@Composable
-//fun CategoryScreen() {
-//    val showDialog = rememberSaveable { mutableStateOf(false) }
-//
-//    if (showDialog.value) {
-//        Dialog(onDismissRequest = { showDialog.value = false }) {
-//            Surface(
-//                modifier = Modifier.padding(16.dp),
-//                shape = RoundedCornerShape(8.dp),
-//                color = MaterialTheme.colorScheme.surface
-//            ) {
-//                Column(
-//                    modifier = Modifier.padding(16.dp),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Text(
-//                        text = "Выберите категории",
-//                        style = MaterialTheme.typography.bodyLarge
-//                    )
-//                    Spacer(modifier = Modifier.height(8.dp))
-//                    Button(onClick = { showDialog.value = false }) {
-//                        Text("Закрыть")
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    // Здесь остальной UI компонент
-//    MaterialTheme {
-//        Scaffold { _ ->
-//            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                Button(onClick = { showDialog.value = true }) {
-//                    Text("Показать категории")
-//                }
-//            }
-//        }
-//    }
-//}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,55 +47,62 @@ fun QuizScreen() {
             )
         },
         content = { padding ->
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = quizQuestion,
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                OutlinedTextField(
-                    value = userAnswer,
-                    onValueChange = { userAnswer = it },
-                    label = { Text("Ваш ответ") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        quizViewModel.checkQuizAnswer(quizQuestion, userAnswer)
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    ) {
+                        Text(
+                            text = if (quizResult.isNotEmpty()) "Результат: $quizResult" else quizQuestion,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(16.dp)
+                        )
                     }
-                ) {
-                    Text("Проверить ответ")
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Результат: $quizResult",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
-                        userAnswer = ""
+                if (quizResult.isEmpty()) {
+                    itemsIndexed(listOf("A", "B", "C", "D")) { index, option ->
+                        Button(
+                            onClick = {
+                                userAnswer = option
+                                quizViewModel.checkQuizAnswer(quizQuestion, userAnswer)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Text(text = option)
+                        }
                     }
-                ) {
-                    Text("Новый вопрос")
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                item {
+                    Button(
+                        onClick = {
+                            quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
+                            userAnswer = ""
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Новый вопрос")
+                    }
                 }
             }
         }
     )
 }
+
