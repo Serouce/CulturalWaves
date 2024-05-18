@@ -31,7 +31,7 @@ fun SetupNavGraph(navController: NavHostController) {
             }
         }
         composable(Screen.FavoriteScreen.route) {
-            FavoriteScreen()
+            FavoriteScreen(navController = navController)
         }
         composable(Screen.SearchScreen.route) {
             SearchScreen(navController = navController)

@@ -16,14 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.android.culturalwaves.ui.components.CardTemplate
+import com.example.android.culturalwaves.ui.navigation.Screen
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FavoriteScreen() {
+fun FavoriteScreen(navController: NavHostController) {
     val favoriteViewModel: FavoriteViewModel = koinViewModel()
     val favoriteArtworks by favoriteViewModel.favoriteArtworks.collectAsState()
+
 
     MaterialTheme {
         Scaffold { padding ->
@@ -49,7 +52,9 @@ fun FavoriteScreen() {
                         onFavoriteClick = {
                             favoriteViewModel.removeFavorite(artwork)
                         },
-                        onCardClick = { /* handle card click if needed */ },
+                        onCardClick = {
+                            navController.navigate(Screen.DetailScreen(artwork.objectId).createRoute())
+                        },
                         onError = {
                             // Логика обработки ошибки загрузки изображения
                             // Например, можно удалить карточку из избранного или показать уведомление

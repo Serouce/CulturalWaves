@@ -237,7 +237,7 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                                     onCardClick = onArtworkSelected,
                                     onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
                                     cardWidth = 300.dp,
-                                    cardHeight = 300.dp
+                                    cardHeight = 301.dp
                                 )
                             }
                         }
