@@ -71,6 +71,7 @@ dependencies {
 
 
 
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.35.1-alpha")
 
 
     implementation("com.google.accompanist:accompanist-coil:0.15.0")

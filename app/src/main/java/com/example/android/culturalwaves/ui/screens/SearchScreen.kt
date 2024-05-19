@@ -4,16 +4,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -34,10 +41,12 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -67,140 +76,147 @@ fun SearchScreen(
     val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE) // Button color based on theme
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Search", style = MaterialTheme.typography.titleLarge) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        },
         content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(MaterialTheme.colorScheme.background)
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    top = paddingValues.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Text field for search input
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = {
-                        searchText = it
-                        if (it.length >= 3) {
-                            coroutineScope.launch {
-                                searchViewModel.fetchSearchSuggestions(it) // Fetch search suggestions
-                            }
-                        }
-                    },
-                    label = { Text("Search") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = {
-                        if (searchText.isNotBlank()) { // Check if search text is not blank before executing search
-                            coroutineScope.launch {
-                                searchViewModel.searchArtworks(searchText) // Execute search
-                            }
-                            searchText = ""
-                        }
-                    }),
-                    singleLine = true,
-                    shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = buttonColor, // Border color when focused
-                        unfocusedBorderColor = buttonColor, // Border color when not focused
-                        cursorColor = MaterialTheme.colorScheme.primary
+                item {
+                    Text(
+                        text = "Search",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(vertical = 16.dp)
                     )
-                )
+                }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Modern search button
-                Button(
-                    onClick = {
-                        if (searchText.isNotBlank()) { // Check if search text is not blank before executing search
-                            coroutineScope.launch {
-                                searchViewModel.searchArtworks(searchText) // Execute search on button click
+                item {
+                    // Text field for search input
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = {
+                            searchText = it
+                            if (it.length >= 3) {
+                                coroutineScope.launch {
+                                    searchViewModel.fetchSearchSuggestions(it) // Fetch search suggestions
+                                }
                             }
-                            searchText = ""
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = buttonColor,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    shape = RoundedCornerShape(12.dp) // Rounded corners for modern look
-                ) {
-                    Text("Search",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.outline
+                        },
+                        label = { Text("Search") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(onSearch = {
+                            if (searchText.isNotBlank()) { // Check if search text is not blank before executing search
+                                coroutineScope.launch {
+                                    searchViewModel.searchArtworks(searchText) // Execute search
+                                }
+                                searchText = ""
+                            }
+                        }),
+                        singleLine = true,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = buttonColor, // Border color when focused
+                            unfocusedBorderColor = buttonColor, // Border color when not focused
+                            cursorColor = MaterialTheme.colorScheme.primary
                         )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Modern search button
+                    Button(
+                        onClick = {
+                            if (searchText.isNotBlank()) { // Check if search text is not blank before executing search
+                                coroutineScope.launch {
+                                    searchViewModel.searchArtworks(searchText) // Execute search on button click
+                                }
+                                searchText = ""
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = buttonColor,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        shape = RoundedCornerShape(12.dp) // Rounded corners for modern look
+                    ) {
+                        Text(
+                            "Search",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
                 }
 
                 val limitedSuggestions = suggestions.take(3) // Limit number of suggestions
 
                 // Display suggestions below text field
                 if (limitedSuggestions.isNotEmpty() && searchText.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
-                            .padding(8.dp)
-                    ) {
-                        limitedSuggestions.forEach { suggestion ->
-                            Text(
-                                text = suggestion,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        searchText = suggestion
-                                        coroutineScope.launch {
-                                            searchViewModel.searchArtworks(suggestion) // Search by selected suggestion
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
+                                .padding(8.dp)
+                        ) {
+                            limitedSuggestions.forEach { suggestion ->
+                                Text(
+                                    text = suggestion,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            searchText = suggestion
+                                            coroutineScope.launch {
+                                                searchViewModel.searchArtworks(suggestion) // Search by selected suggestion
+                                            }
                                         }
-                                    }
-                                    .padding(8.dp),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                                        .padding(8.dp),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                         }
                     }
                 }
 
                 // Display "Search Results" header
                 if (searchResults.itemCount > 0) {
-                    Text(
-                        text = "Search Results",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                    )
+                    item {
+                        Text(
+                            text = "Search Results",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
                 }
 
                 // Display search results using LazyVerticalGrid
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 150.dp),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(searchResults.itemCount) { index ->
-                        searchResults[index]?.let { artwork ->
-                            val isFavorite = remember { mutableStateOf(false) }
-                            val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
+                items(searchResults.itemCount) { index ->
+                    searchResults[index]?.let { artwork ->
+                        val isFavorite = remember { mutableStateOf(false) }
+                        val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
 
-                            LaunchedEffect(key1 = artwork.objectId) {
-                                isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0) // Check if artwork is favorite
-                            }
+                        LaunchedEffect(key1 = artwork.objectId) {
+                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0) // Check if artwork is favorite
+                        }
 
-                            if (showCard) {
+                        if (showCard) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentSize(Alignment.Center)
+                            ) {
                                 CardTemplate(
                                     imageUrl = artwork.imageUrl ?: "",
                                     title = artwork.title ?: "No Title",
@@ -221,8 +237,8 @@ fun SearchScreen(
                                         navController.navigate(Screen.DetailScreen(objectId).createRoute()) // Navigate to artwork details
                                     },
                                     onError = { searchViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
-                                    cardWidth = 180.dp, // Card width
-                                    cardHeight = 180.dp // Card height
+                                    cardWidth = 250.dp, // Card width
+                                    cardHeight = 250.dp // Card height
                                 )
                             }
                         }
