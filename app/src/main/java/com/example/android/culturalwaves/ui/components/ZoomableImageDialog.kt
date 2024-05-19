@@ -24,7 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 
@@ -90,6 +92,7 @@ fun ZoomableImageScreen(
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
+    var imageSize by remember { mutableStateOf(androidx.compose.ui.geometry.Size.Zero) }
 
     Box(
         modifier = Modifier
@@ -97,9 +100,15 @@ fun ZoomableImageScreen(
             .background(Color.Black)
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, zoom, _ ->
-                    scale *= zoom
-                    offsetX += pan.x
-                    offsetY += pan.y
+                    scale = (scale * zoom).coerceIn(1f, 4f)  // Ограничение масштаба от 1 до 4
+                    offsetX = (offsetX + pan.x).coerceIn(
+                        -imageSize.width * (scale - 1) / 2,
+                        imageSize.width * (scale - 1) / 2
+                    )
+                    offsetY = (offsetY + pan.y).coerceIn(
+                        -imageSize.height * (scale - 1) / 2,
+                        imageSize.height * (scale - 1) / 2
+                    )
                 }
             }
             .graphicsLayer(
@@ -114,7 +123,11 @@ fun ZoomableImageScreen(
             model = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .onGloballyPositioned { coordinates ->
+                    imageSize = coordinates.size.toSize()
+                }
         )
     }
 }

@@ -40,7 +40,7 @@ val DarkBackgroundEnd = Color(0xFF000000) // Конец градиента тё�
 //}
 
 enum class GradientType(val colors: List<Color>) {
-    LIGHT_THEME(listOf(Color(0xFFFAFAFA), Color(0xFFCFD8DC))),  // Очень светлый серый к светло-голубому серому
+    LIGHT_THEME(listOf(Color(0xFFFAF9F6), Color(0xFFB0BEC5))),  // Кремовый к светло-серому
     DARK_THEME(listOf(Color(0xFF263238), Color(0xFF37474F)))   // Темный серо-синий к серо-синему
 }
 

@@ -1,6 +1,10 @@
 package com.example.android.culturalwaves.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.android.culturalwaves.R
 import com.example.android.culturalwaves.viewmodel.QuizViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -39,6 +48,11 @@ fun QuizScreen() {
     val quizQuestion by quizViewModel.quizQuestion.collectAsState()
     val quizResult by quizViewModel.quizResult.collectAsState()
     var userAnswer by remember { mutableStateOf("") }
+
+    // Проверяем, является ли текущая тема темной
+    val isDarkTheme = isSystemInDarkTheme()
+    val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE) // Цвет для кнопок в зависимости от темы
+    val cardBackgroundPainter = if (isDarkTheme) painterResource(id = R.drawable.back_4) else painterResource(id = R.drawable.background)
 
     Scaffold(
         topBar = {
@@ -62,11 +76,22 @@ fun QuizScreen() {
                             .padding(16.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                     ) {
-                        Text(
-                            text = if (quizResult.isNotEmpty()) "Результат: $quizResult" else quizQuestion,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(16.dp)
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Image(
+                                painter = cardBackgroundPainter, // Используем изображение в зависимости от темы
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.matchParentSize()
+                            )
+                            Text(
+                                text = if (quizResult.isNotEmpty()) "Результат: $quizResult" else quizQuestion,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.White,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
                     }
                 }
 
@@ -79,9 +104,14 @@ fun QuizScreen() {
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp)
+                                .padding(vertical = 4.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                         ) {
-                            Text(text = option)
+                            Text(
+                                text = option,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.White
+                            )
                         }
                     }
                 }
@@ -96,9 +126,14 @@ fun QuizScreen() {
                             quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
                             userAnswer = ""
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                     ) {
-                        Text("Новый вопрос")
+                        Text(
+                            text = "Новый вопрос",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.White
+                        )
                     }
                 }
             }
