@@ -64,7 +64,7 @@ import org.koin.core.parameter.parametersOf
 fun SimpleDetailSection(label: String, content: String?) {
     content?.let {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Text(label, style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary))
+            Text(label, style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.outline))
             Text(it, style = MaterialTheme.typography.bodyMedium)
         }
     }
@@ -74,7 +74,7 @@ fun SimpleDetailSection(label: String, content: String?) {
 fun ArtistSection(people: List<Artist>?) {
     people?.let {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Artists and Roles:", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary))
+            Text("Artists and Roles:", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.outline))
             it.forEach { person ->
                 Text(
                     "${person.name ?: "Unknown"} - ${person.role ?: "Unknown role"}",

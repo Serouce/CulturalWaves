@@ -11,61 +11,23 @@ import retrofit2.Response
 
 private const val API_KEY = "457bf8b1-0c12-46bd-8f80-bd7ff41905d6"
 
-
-//class ArtRepository(private val apiService: ArtMuseumApiService) {
-//    private val pagerConfigurator = PagerConfigurator()
-//
-//    fun getArtworksStream(queryParams: Map<String, String>? = null): Flow<PagingData<Artwork>> {
-//        return Pager(
-//            config = pagerConfigurator.getDefaultConfig(),
-//            pagingSourceFactory = {
-//                queryParams?.let {
-//                    // Создаем ArtworkPagingSource только если queryParams не null
-//                    ArtworkPagingSource(apiService, API_KEY, it)
-//                } ?: ArtworkPagingSource(apiService, API_KEY)
-//                // В случае null queryParams создаем ArtworkPagingSource без параметров
-//            }
-//        ).flow
-//    }
-//
-//    suspend fun fetchArtworkDetails(objectId: Int): ArtworkDetailResponse? {
-//        return try {
-//            val response = apiService.fetchArtworkDetails(objectId, API_KEY)
-//            if (response.isSuccessful) {
-//                response.body()
-//            } else {
-//                null // Обработка ошибок может быть расширена
-//            }
-//        } catch (e: Exception) {
-//            null // Логирование или дополнительная обработка исключений
-//        }
-//    }
-//
-//    suspend fun fetchArtworksForSuggestions(query: String): Response<ArtResponse> {
-//        return apiService.fetchArtworks(
-//            apiKey = API_KEY,
-//            title = query,
-//            size = 5
-//        ) // Limit results to 5 for suggestions
-//    }
-//}
-//
-
 class ArtRepository(private val apiService: ArtMuseumApiService) {
     private val pagerConfigurator = PagerConfigurator()
 
+    // Функция возвращает поток PagingData, который используется для ленивой загрузки данных
     fun getArtworksStream(queryParams: Map<String, String> = emptyMap()): Flow<PagingData<Artwork>> {
         return Pager(
-            config = pagerConfigurator.getDefaultConfig(),
-            pagingSourceFactory = { ArtworkPagingSource(apiService, API_KEY, queryParams) }
+            config = pagerConfigurator.getDefaultConfig(), // Конфигурация для пагинации
+            pagingSourceFactory = { ArtworkPagingSource(apiService, API_KEY, queryParams) } // Источник данных для пагинации
         ).flow
     }
 
+    // Функция для получения деталей конкретного объекта по его ID
     suspend fun fetchArtworkDetails(objectId: Int): ArtworkDetailResponse? {
         return try {
             val response = apiService.fetchArtworkDetails(objectId, API_KEY)
             if (response.isSuccessful) {
-                response.body()
+                response.body() // Возвращает тело ответа, если запрос успешен
             } else {
                 null // Обработка ошибок может быть расширена
             }
@@ -74,11 +36,12 @@ class ArtRepository(private val apiService: ArtMuseumApiService) {
         }
     }
 
+    // Функция для получения предложений по поисковому запросу
     suspend fun fetchArtworksForSuggestions(query: String): Response<ArtResponse> {
         return apiService.fetchArtworks(
             apiKey = API_KEY,
             title = query,
-            size = 5
-        ) // Limit results to 5 for suggestions
+            size = 5 // Ограничение количества результатов для предложений
+        )
     }
 }
