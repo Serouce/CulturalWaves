@@ -51,142 +51,91 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.android.culturalwaves.data.entities.Artist
 import com.example.android.culturalwaves.data.entities.ImageDetail
+import com.example.android.culturalwaves.ui.components.ArtistSection
 import com.example.android.culturalwaves.ui.components.ArtworkImage
+import com.example.android.culturalwaves.ui.components.ImageGallery
+import com.example.android.culturalwaves.ui.components.SimpleDetailSection
 import com.example.android.culturalwaves.ui.components.ZoomableImageScreen
 import com.example.android.culturalwaves.ui.navigation.Screen
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-
-
-@Composable
-fun SimpleDetailSection(label: String, content: String?) {
-    content?.let {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Text(label, style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.outline))
-            Text(it, style = MaterialTheme.typography.bodyMedium)
-        }
-    }
-}
-
-@Composable
-fun ArtistSection(people: List<Artist>?) {
-    people?.let {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Artists and Roles:", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.outline))
-            it.forEach { person ->
-                Text(
-                    "${person.name ?: "Unknown"} - ${person.role ?: "Unknown role"}",
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ImageGallery(images: List<ImageDetail>?) {
-    images?.let {
-        if (it.isNotEmpty()) {
-            LazyRow(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(it) { imageDetail ->
-                    ImageThumbnail(imageDetail)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ImageThumbnail(imageDetail: ImageDetail) {
-    SubcomposeAsyncImage(
-        model = imageDetail.baseImageUrl,
-        contentDescription = imageDetail.description,
-        modifier = Modifier
-            .size(100.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp)),
-        contentScale = ContentScale.Crop,
-        loading = {
-            Box(modifier = Modifier.matchParentSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-        },
-        error = {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = "Load error",
-                modifier = Modifier.matchParentSize()
-            )
-        }
-    )
-}
-
-
 @Composable
 fun DetailScreen(navController: NavHostController, objectId: Int) {
     val viewModel: ArtworkDetailViewModel = koinViewModel { parametersOf(objectId) }
     val artworkDetailState by viewModel.artworkDetails.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     var showDialog by remember { mutableStateOf(false) }
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
 
-    artworkDetailState?.let { artworkDetail ->
-        Scaffold { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(WindowInsets.navigationBars.asPaddingValues())
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Заголовок
+    Scaffold { padding ->
+        if (isLoading) {
+            // Отображение индикатора загрузки, если данные загружаются
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        } else if (error != null) {
+            // Отображение сообщения об ошибке, если произошла ошибка
+            Box(modifier = Modifier.fillMaxSize()) {
                 Text(
-                    text = artworkDetail.title ?: "Artwork Details",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .background(MaterialTheme.colorScheme.background)
+                    text = error ?: "Unknown Error",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
                 )
-
-                // Изображение
-                artworkDetail.imageUrl?.let { imageUrl ->
-                    Image(
-                        painter = rememberAsyncImagePainter(imageUrl),
-                        contentDescription = artworkDetail.title,
+            }
+        } else {
+            // Отображение деталей произведения искусства, если данные успешно загружены
+            artworkDetailState?.let { artworkDetail ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(WindowInsets.navigationBars.asPaddingValues())
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Заголовок
+                    Text(
+                        text = artworkDetail.title ?: "Artwork Details",
+                        style = MaterialTheme.typography.headlineLarge,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1.5f)
-                            .clip(RoundedCornerShape(12.dp))
-                            .padding(horizontal = 16.dp)
-                            .clickable {
-                                selectedImageUrl = imageUrl
-                                showDialog = true
-                            }
+                            .padding(16.dp)
+                            .background(MaterialTheme.colorScheme.background)
                     )
+
+                    // Изображение
+                    artworkDetail.imageUrl?.let { imageUrl ->
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = artworkDetail.title,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1.5f)
+                                .clip(RoundedCornerShape(12.dp))
+                                .padding(horizontal = 16.dp)
+                                .clickable {
+                                    selectedImageUrl = imageUrl
+                                    showDialog = true
+                                }
+                        )
+                    }
+
+                    // Описание и другие детали
+                    SimpleDetailSection("Description:", artworkDetail.description)
+                    SimpleDetailSection("Technique:", artworkDetail.technique)
+                    SimpleDetailSection("Provenance:", artworkDetail.provenance)
+                    SimpleDetailSection("Period:", artworkDetail.period)
+                    SimpleDetailSection("Dimensions:", artworkDetail.dimensions)
+
+                    ArtistSection(artworkDetail.people)
+
+                    ImageGallery(artworkDetail.images)
                 }
-
-                // Описание и другие детали
-                SimpleDetailSection("Description:", artworkDetail.description)
-                SimpleDetailSection("Technique:", artworkDetail.technique)
-                SimpleDetailSection("Provenance:", artworkDetail.provenance)
-                SimpleDetailSection("Period:", artworkDetail.period)
-                SimpleDetailSection("Dimensions:", artworkDetail.dimensions)
-
-                ArtistSection(artworkDetail.people)
-
-                ImageGallery(artworkDetail.images)
             }
-        }
-    } ?: run {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 
@@ -196,7 +145,5 @@ fun DetailScreen(navController: NavHostController, objectId: Int) {
         }
     }
 }
-
-
 
 

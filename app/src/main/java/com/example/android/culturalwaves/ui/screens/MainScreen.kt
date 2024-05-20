@@ -43,6 +43,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -67,115 +68,6 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-
-//@Composable
-//fun MainScreen(onArtworkSelected: (Int) -> Unit) {
-//    val mainViewModel: MainViewModel = koinViewModel()
-//    val favoriteViewModel: FavoriteViewModel = koinViewModel()
-//    val artworks: LazyPagingItems<Artwork> = mainViewModel.artworks.collectAsLazyPagingItems()
-//    val artworkLoadStates by mainViewModel.artworkLoadStates.collectAsState()
-//    val currentClassification by mainViewModel.currentClassification.collectAsState()
-//    val listState = rememberLazyListState()
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    Column(
-//        modifier = Modifier.fillMaxSize() // Убираем фоновый цвет
-//    ) {
-//        Scaffold(
-//            floatingActionButton = {
-//                FloatingActionButton(
-//                    onClick = {
-//                        coroutineScope.launch {
-//                            listState.animateScrollToItem(0)
-//                        }
-//                    },
-//                    modifier = Modifier
-//                        .padding(16.dp)
-//                        .alpha(0.7f), // Устанавливаем полупрозрачность
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.onPrimary
-//                ) {
-//                    Icon(painter = painterResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
-//                }
-//            }
-//        ) { padding ->
-//            LazyColumn(
-//                state = listState,
-//                contentPadding = PaddingValues(
-//                    top = padding.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-//                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
-//                    start = 16.dp,
-//                    end = 16.dp
-//                ),
-//                verticalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier.fillMaxSize()
-//            ) {
-//                // Добавляем горизонтальный список для категорий
-//                item {
-//                    LazyRow(
-//                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-//                        modifier = Modifier.padding(vertical = 8.dp)
-//                    ) {
-//                        items(CategoryUtils.getCategories()) { (category, imageRes) ->
-//                            CategoryCard(
-//                                category = category,
-//                                imageRes = imageRes,
-//                                isSelected = currentClassification == category,
-//                                onClick = { mainViewModel.toggleClassification(category) }
-//                            )
-//                        }
-//                    }
-//                }
-//
-//                items(artworks.itemCount) { index ->
-//                    artworks[index]?.let { artwork ->
-//                        val isFavorite = remember { mutableStateOf(false) }
-//                        val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
-//
-//                        LaunchedEffect(key1 = artwork.objectId) {
-//                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
-//                        }
-//
-//                        if (showCard) {
-//                            Box(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .wrapContentSize(Alignment.Center)
-//                            ) {
-//                                CardTemplate(
-//                                    imageUrl = artwork.imageUrl ?: "",
-//                                    title = artwork.title ?: "No Title",
-//                                    artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
-//                                    objectId = artwork.objectId ?: 0,
-//                                    isFavorite = isFavorite.value,
-//                                    onFavoriteClick = {
-//                                        if (isFavorite.value) {
-//                                            artwork.objectId?.let { id ->
-//                                                favoriteViewModel.removeFavorite(
-//                                                    FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "")
-//                                                )
-//                                            }
-//                                        } else {
-//                                            favoriteViewModel.addFavorite(
-//                                                FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "")
-//                                            )
-//                                        }
-//                                        isFavorite.value = !isFavorite.value
-//                                    },
-//                                    onCardClick = onArtworkSelected,
-//                                    onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
-//                                    cardWidth = 300.dp,
-//                                    cardHeight = 301.dp
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onArtworkSelected: (Int) -> Unit) {
@@ -184,12 +76,13 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val artworks: LazyPagingItems<Artwork> = mainViewModel.artworks.collectAsLazyPagingItems()
     val artworkLoadStates by mainViewModel.artworkLoadStates.collectAsState()
     val currentClassification by mainViewModel.currentClassification.collectAsState()
-    val isRefreshing by mainViewModel.isRefreshing.collectAsState() // Следим за состоянием обновления
+    val isRefreshing by mainViewModel.isRefreshing.collectAsState()
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val error by mainViewModel.error.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize() // Убираем фоновый цвет
+        modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
             floatingActionButton = {
@@ -201,17 +94,22 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                     },
                     modifier = Modifier
                         .padding(16.dp)
-                        .alpha(0.7f), // Устанавливаем полупрозрачность
+                        .alpha(0.7f),
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ) {
                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
                 }
+            },
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Artworks") }
+                )
             }
         ) { padding ->
             SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing), // Состояние обновления
-                onRefresh = { mainViewModel.refreshArtworks() } // Действие при обновлении
+                state = rememberSwipeRefreshState(isRefreshing),
+                onRefresh = { mainViewModel.refreshArtworks() }
             ) {
                 LazyColumn(
                     state = listState,
@@ -224,7 +122,6 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Добавляем заголовок "Choose a Category"
                     item {
                         Text(
                             text = "Choose a Category",
@@ -233,7 +130,6 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                         )
                     }
 
-                    // Добавляем горизонтальный список для категорий
                     item {
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -247,6 +143,17 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                                     onClick = { mainViewModel.toggleClassification(category) }
                                 )
                             }
+                        }
+                    }
+
+                    if (error != null) {
+                        item {
+                            Text(
+                                text = error ?: "Unknown error",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(16.dp)
+                            )
                         }
                     }
 
@@ -299,3 +206,4 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
         }
     }
 }
+

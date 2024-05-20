@@ -49,9 +49,8 @@ fun QuizScreen() {
     val quizResult by quizViewModel.quizResult.collectAsState()
     var userAnswer by remember { mutableStateOf("") }
 
-    // Проверяем, является ли текущая тема темной
     val isDarkTheme = isSystemInDarkTheme()
-    val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE) // Цвет для кнопок в зависимости от темы
+    val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE)
     val cardBackgroundPainter = if (isDarkTheme) painterResource(id = R.drawable.back_4) else painterResource(id = R.drawable.background)
 
     Scaffold(
@@ -80,7 +79,7 @@ fun QuizScreen() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Image(
-                                painter = cardBackgroundPainter, // Используем изображение в зависимости от темы
+                                painter = cardBackgroundPainter,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.matchParentSize()

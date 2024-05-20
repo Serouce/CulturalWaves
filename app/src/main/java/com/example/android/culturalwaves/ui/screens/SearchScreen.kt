@@ -71,6 +71,7 @@ fun SearchScreen(
     val searchResults = searchViewModel.searchResults.collectAsLazyPagingItems() // Search results
     val suggestions by searchViewModel.searchSuggestions.collectAsState() // Search suggestions
     val artworkLoadStates by searchViewModel.artworkLoadStates.collectAsState() // Artwork load states
+    val error by searchViewModel.error.collectAsState() // Error state
 
     val isDarkTheme = isSystemInDarkTheme()
     val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE) // Button color based on theme
@@ -187,6 +188,18 @@ fun SearchScreen(
                                 )
                             }
                         }
+                    }
+                }
+
+                // Display error message if exists
+                if (error != null) {
+                    item {
+                        Text(
+                            text = error ?: "",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
                     }
                 }
 

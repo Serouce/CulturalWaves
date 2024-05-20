@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.example.android.culturalwaves.utils.Result
+
 
 
 //class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
@@ -77,6 +79,10 @@ class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
     private val _artworkLoadStates = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val artworkLoadStates: StateFlow<Map<Int, Boolean>> get() = _artworkLoadStates
 
+    // Состояние для хранения ошибок
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> get() = _error
+
     // Обновляем поток данных произведений искусства при изменении классификации
     init {
         viewModelScope.launch {
@@ -91,8 +97,8 @@ class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
         viewModelScope.launch {
             _isRefreshing.value = true
             val queryParams = classification?.let { mapOf("classification" to it) } ?: emptyMap()
-            artRepository.getArtworksStream(queryParams).cachedIn(viewModelScope).collect {
-                _artworks.value = it
+            artRepository.getArtworksStream(queryParams).cachedIn(viewModelScope).collect { pagingData ->
+                _artworks.value = pagingData
                 _isRefreshing.value = false
             }
         }

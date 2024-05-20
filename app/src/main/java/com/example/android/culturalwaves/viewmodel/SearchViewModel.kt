@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.example.android.culturalwaves.utils.Result
 
 //class SearchViewModel(private val repository: ArtRepository) : ViewModel() {
 //    private val _searchResults = MutableStateFlow<PagingData<Artwork>>(PagingData.empty())
@@ -53,47 +54,65 @@ import kotlinx.coroutines.launch
 //}
 
 class SearchViewModel(private val repository: ArtRepository) : ViewModel() {
-    private val _searchResults = MutableStateFlow<PagingData<Artwork>>(PagingData.empty()) // State for search results
-    private val _searchSuggestions = MutableStateFlow<List<String>>(emptyList()) // State for search suggestions
+
+    // StateFlow для хранения результатов поиска
+    private val _searchResults = MutableStateFlow<PagingData<Artwork>>(PagingData.empty())
     val searchResults: StateFlow<PagingData<Artwork>> = _searchResults.asStateFlow()
+
+    // StateFlow для хранения предложений по поисковому запросу
+    private val _searchSuggestions = MutableStateFlow<List<String>>(emptyList())
     val searchSuggestions: StateFlow<List<String>> = _searchSuggestions.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false) // Loading state
+    // StateFlow для отслеживания состояния загрузки
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _artworkLoadStates = MutableStateFlow<Map<Int, Boolean>>(emptyMap()) // State for artwork load statuses
+    // StateFlow для отслеживания статуса загрузки произведений искусства
+    private val _artworkLoadStates = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val artworkLoadStates: StateFlow<Map<Int, Boolean>> = _artworkLoadStates
 
-    // Function to set artwork load state
+    // StateFlow для отслеживания ошибок
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+
+    // Функция для установки состояния загрузки произведения искусства
     fun setArtworkLoadState(objectId: Int, isLoaded: Boolean) {
         _artworkLoadStates.value = _artworkLoadStates.value.toMutableMap().apply {
             this[objectId] = isLoaded
         }
     }
 
-    // Function to search artworks by title
+    // Функция для поиска произведений искусства по названию
     fun searchArtworks(query: String) {
-        _isLoading.value = true // Set loading state to true
+        _isLoading.value = true // Устанавливаем состояние загрузки в true
         val queryParams = mutableMapOf<String, String>().apply {
-            put("title", query) // Add title parameter for search
+            put("title", query) // Добавляем параметр заголовка для поиска
         }
 
         viewModelScope.launch {
-            repository.getArtworksStream(queryParams).cachedIn(viewModelScope).collect {
-                _searchResults.value = it // Update search results state
-                _isLoading.value = false // Set loading state to false
+            // Получаем поток данных произведений искусства из репозитория
+            repository.getArtworksStream(queryParams).cachedIn(viewModelScope).collect { pagingData ->
+                _searchResults.value = pagingData // Обновляем состояние результатов поиска
+                _isLoading.value = false // Устанавливаем состояние загрузки в false
             }
         }
     }
 
-    // Function to fetch search suggestions based on title
+    // Функция для получения предложений по поисковому запросу
     fun fetchSearchSuggestions(query: String) {
-        if (query.length < 3) return // Limit minimum character count for suggestions
+        if (query.length < 3) return // Ограничиваем минимальное количество символов для предложений
 
         viewModelScope.launch {
-            val response = repository.fetchArtworksForSuggestions(query)
-            if (response.isSuccessful) {
-                _searchSuggestions.value = response.body()?.records?.map { it.title ?: "No Title" } ?: emptyList() // Update suggestions state
+            // Обработка результата через репозиторий
+            when (val result = repository.fetchArtworksForSuggestions(query)) {
+                is Result.Success -> {
+                    _searchSuggestions.value = result.data.records.map { it.title ?: "No Title" } ?: emptyList()
+                    _error.value = null // Обнуляем ошибку
+                }
+                is Result.Error -> {
+                    _searchSuggestions.value = emptyList() // Очистка предложений при ошибке
+                    _error.value = result.exception.message // Устанавливаем сообщение об ошибке
+                }
             }
         }
     }
