@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.domain.repository
+package com.example.android.culturalwaves.data.repositories
 
 import com.example.android.culturalwaves.data.dao.FavoriteArtworkDao
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork

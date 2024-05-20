@@ -1,6 +1,6 @@
-package com.example.android.culturalwaves.domain.repository
+package com.example.android.culturalwaves.data.repositories
 
-import com.example.android.culturalwaves.data.network.GenerativeModelInitializer
+import com.example.android.culturalwaves.utils.GenerativeModelInitializer
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers

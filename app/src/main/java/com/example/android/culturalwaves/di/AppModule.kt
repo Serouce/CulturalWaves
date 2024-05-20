@@ -1,10 +1,10 @@
 package com.example.android.culturalwaves.di
 
 import com.example.android.culturalwaves.data.network.GeminiRetrofitClient
-import com.example.android.culturalwaves.domain.repository.ArtRepository
+import com.example.android.culturalwaves.data.repositories.ArtRepository
 import com.example.android.culturalwaves.data.network.RetrofitClient
-import com.example.android.culturalwaves.domain.repository.FavoriteArtRepository
-import com.example.android.culturalwaves.domain.repository.QuizRepository
+import com.example.android.culturalwaves.data.repositories.FavoriteArtRepository
+import com.example.android.culturalwaves.data.repositories.QuizRepository
 import com.example.android.culturalwaves.viewmodel.MainViewModel
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel

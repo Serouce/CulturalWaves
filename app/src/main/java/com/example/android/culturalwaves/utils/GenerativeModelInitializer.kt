@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.data.network
+package com.example.android.culturalwaves.utils
 
 import com.google.ai.client.generativeai.GenerativeModel
 

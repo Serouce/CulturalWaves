@@ -3,7 +3,7 @@ package com.example.android.culturalwaves.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
-import com.example.android.culturalwaves.domain.repository.FavoriteArtRepository
+import com.example.android.culturalwaves.data.repositories.FavoriteArtRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

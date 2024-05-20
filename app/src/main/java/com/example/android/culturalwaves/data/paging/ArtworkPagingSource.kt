@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.domain.repository
+package com.example.android.culturalwaves.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

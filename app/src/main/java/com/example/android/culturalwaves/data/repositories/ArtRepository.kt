@@ -1,4 +1,4 @@
-package com.example.android.culturalwaves.domain.repository
+package com.example.android.culturalwaves.data.repositories
 
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -6,10 +6,14 @@ import com.example.android.culturalwaves.data.entities.ArtResponse
 import com.example.android.culturalwaves.data.entities.Artwork
 import com.example.android.culturalwaves.data.entities.ArtworkDetailResponse
 import com.example.android.culturalwaves.data.network.ArtMuseumApiService
+import com.example.android.culturalwaves.data.paging.ArtworkPagingSource
+import com.example.android.culturalwaves.utils.PagerConfigurator
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
+
 private const val API_KEY = "457bf8b1-0c12-46bd-8f80-bd7ff41905d6"
+
 
 class ArtRepository(private val apiService: ArtMuseumApiService) {
     private val pagerConfigurator = PagerConfigurator()
@@ -18,7 +22,13 @@ class ArtRepository(private val apiService: ArtMuseumApiService) {
     fun getArtworksStream(queryParams: Map<String, String> = emptyMap()): Flow<PagingData<Artwork>> {
         return Pager(
             config = pagerConfigurator.getDefaultConfig(), // Конфигурация для пагинации
-            pagingSourceFactory = { ArtworkPagingSource(apiService, API_KEY, queryParams) } // Источник данных для пагинации
+            pagingSourceFactory = {
+                ArtworkPagingSource(
+                    apiService,
+                    API_KEY,
+                    queryParams
+                )
+            } // Источник данных для пагинации
         ).flow
     }
 
