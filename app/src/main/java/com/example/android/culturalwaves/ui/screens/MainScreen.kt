@@ -1,14 +1,9 @@
 package com.example.android.culturalwaves.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,24 +20,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,14 +37,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import com.example.android.culturalwaves.R
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.ui.components.CategoryCard
@@ -65,7 +49,6 @@ import com.example.android.culturalwaves.utils.CategoryUtils
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +59,7 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val artworks: LazyPagingItems<Artwork> = mainViewModel.artworks.collectAsLazyPagingItems()
     val artworkLoadStates by mainViewModel.artworkLoadStates.collectAsState()
     val currentClassification by mainViewModel.currentClassification.collectAsState()
-    val isRefreshing by mainViewModel.isRefreshing.collectAsState()
+    val isLoading by mainViewModel.isLoading.collectAsState()
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val error by mainViewModel.error.collectAsState()
@@ -108,7 +91,7 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
             }
         ) { padding ->
             SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing),
+                state = rememberSwipeRefreshState(isLoading),
                 onRefresh = { mainViewModel.refreshArtworks() }
             ) {
                 LazyColumn(

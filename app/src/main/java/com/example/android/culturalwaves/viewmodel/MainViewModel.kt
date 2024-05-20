@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.example.android.culturalwaves.utils.Result
-
+import kotlinx.coroutines.flow.asStateFlow
 
 
 //class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
@@ -61,29 +61,16 @@ import com.example.android.culturalwaves.utils.Result
 //}
 //
 
-class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
-
-    // MutableStateFlow для хранения текущей классификации
+class MainViewModel(private val artRepository: ArtRepository) : BaseViewModel() {
     private val _currentClassification = MutableStateFlow<String?>(null)
-    val currentClassification: StateFlow<String?> get() = _currentClassification
+    val currentClassification: StateFlow<String?> get() = _currentClassification.asStateFlow()
 
-    // Состояние для хранения данных о произведениях искусства
     private val _artworks = MutableStateFlow<PagingData<Artwork>>(PagingData.empty())
-    val artworks: StateFlow<PagingData<Artwork>> get() = _artworks
+    val artworks: StateFlow<PagingData<Artwork>> get() = _artworks.asStateFlow()
 
-    // Состояние для отслеживания обновления данных
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing
-
-    // Состояние загрузки изображений
     private val _artworkLoadStates = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
-    val artworkLoadStates: StateFlow<Map<Int, Boolean>> get() = _artworkLoadStates
+    val artworkLoadStates: StateFlow<Map<Int, Boolean>> get() = _artworkLoadStates.asStateFlow()
 
-    // Состояние для хранения ошибок
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> get() = _error
-
-    // Обновляем поток данных произведений искусства при изменении классификации
     init {
         viewModelScope.launch {
             currentClassification.collectLatest { classification ->
@@ -92,36 +79,32 @@ class MainViewModel(private val artRepository: ArtRepository) : ViewModel() {
         }
     }
 
-    // Функция для обновления данных произведений искусства
     fun refreshArtworks(classification: String? = _currentClassification.value) {
         viewModelScope.launch {
-            _isRefreshing.value = true
+            _isLoading.value = true
             val queryParams = classification?.let { mapOf("classification" to it) } ?: emptyMap()
             artRepository.getArtworksStream(queryParams).cachedIn(viewModelScope).collect { pagingData ->
                 _artworks.value = pagingData
-                _isRefreshing.value = false
+                _isLoading.value = false
             }
         }
     }
 
-    // Функция для установки состояния загрузки изображения
     fun setArtworkLoadState(objectId: Int, isLoaded: Boolean) {
         _artworkLoadStates.value = _artworkLoadStates.value.toMutableMap().apply {
             this[objectId] = isLoaded
         }
     }
 
-    // Функция для установки текущей классификации
     fun setClassification(classification: String?) {
         _currentClassification.value = classification
     }
 
-    // Функция для переключения классификации и сброса фильтра при повторном нажатии
     fun toggleClassification(classification: String) {
         if (_currentClassification.value == classification) {
-            _currentClassification.value = null // Сбросить фильтр
+            _currentClassification.value = null
         } else {
-            _currentClassification.value = classification // Установить новую классификацию
+            _currentClassification.value = classification
         }
     }
 }
