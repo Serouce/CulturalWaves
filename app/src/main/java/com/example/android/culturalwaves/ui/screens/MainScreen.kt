@@ -45,13 +45,14 @@ import androidx.compose.ui.res.vectorResource
 import com.example.android.culturalwaves.R
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.ui.components.CategoryCard
+import com.example.android.culturalwaves.ui.components.ErrorView
+import com.example.android.culturalwaves.ui.components.TopAppBarTitle
 import com.example.android.culturalwaves.utils.CategoryUtils
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val mainViewModel: MainViewModel = koinViewModel()
@@ -83,11 +84,6 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                 ) {
                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
                 }
-            },
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = "Artworks") }
-                )
             }
         ) { padding ->
             SwipeRefresh(
@@ -105,6 +101,10 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    item {
+                        TopAppBarTitle(title = "Artworks") // Используем TopAppBarTitle для заголовка
+                    }
+
                     item {
                         Text(
                             text = "Choose a Category",
@@ -131,55 +131,50 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
 
                     if (error != null) {
                         item {
-                            Text(
-                                text = error ?: "Unknown error",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(16.dp)
-                            )
+                            ErrorView(errorMessage = error) // Используем ErrorView для отображения сообщения об ошибке
                         }
-                    }
+                    } else {
+                        items(artworks.itemCount) { index ->
+                            artworks[index]?.let { artwork ->
+                                val isFavorite = remember { mutableStateOf(false) }
+                                val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
 
-                    items(artworks.itemCount) { index ->
-                        artworks[index]?.let { artwork ->
-                            val isFavorite = remember { mutableStateOf(false) }
-                            val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
+                                LaunchedEffect(key1 = artwork.objectId) {
+                                    isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
+                                }
 
-                            LaunchedEffect(key1 = artwork.objectId) {
-                                isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
-                            }
-
-                            if (showCard) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentSize(Alignment.Center)
-                                ) {
-                                    CardTemplate(
-                                        imageUrl = artwork.imageUrl ?: "",
-                                        title = artwork.title ?: "No Title",
-                                        artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
-                                        objectId = artwork.objectId ?: 0,
-                                        isFavorite = isFavorite.value,
-                                        onFavoriteClick = {
-                                            if (isFavorite.value) {
-                                                artwork.objectId?.let { id ->
-                                                    favoriteViewModel.removeFavorite(
-                                                        FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "")
+                                if (showCard) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentSize(Alignment.Center)
+                                    ) {
+                                        CardTemplate(
+                                            imageUrl = artwork.imageUrl ?: "",
+                                            title = artwork.title ?: "No Title",
+                                            artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+                                            objectId = artwork.objectId ?: 0,
+                                            isFavorite = isFavorite.value,
+                                            onFavoriteClick = {
+                                                if (isFavorite.value) {
+                                                    artwork.objectId?.let { id ->
+                                                        favoriteViewModel.removeFavorite(
+                                                            FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "")
+                                                        )
+                                                    }
+                                                } else {
+                                                    favoriteViewModel.addFavorite(
+                                                        FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "")
                                                     )
                                                 }
-                                            } else {
-                                                favoriteViewModel.addFavorite(
-                                                    FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "")
-                                                )
-                                            }
-                                            isFavorite.value = !isFavorite.value
-                                        },
-                                        onCardClick = onArtworkSelected,
-                                        onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
-                                        cardWidth = 300.dp,
-                                        cardHeight = 301.dp
-                                    )
+                                                isFavorite.value = !isFavorite.value
+                                            },
+                                            onCardClick = onArtworkSelected,
+                                            onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
+                                            cardWidth = 300.dp,
+                                            cardHeight = 301.dp
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -189,4 +184,5 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
         }
     }
 }
+
 

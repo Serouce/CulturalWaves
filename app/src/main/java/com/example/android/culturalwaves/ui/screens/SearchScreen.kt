@@ -54,12 +54,16 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.ui.navigation.Screen
 import com.example.android.culturalwaves.ui.components.CardTemplate
+import com.example.android.culturalwaves.ui.components.ErrorView
+import com.example.android.culturalwaves.ui.components.SearchHeader
+import com.example.android.culturalwaves.ui.components.SearchInputField
+import com.example.android.culturalwaves.ui.components.SuggestionsList
+import com.example.android.culturalwaves.ui.components.TopAppBarTitle
 import com.example.android.culturalwaves.viewmodel.FavoriteViewModel
 import com.example.android.culturalwaves.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     navController: NavHostController,
@@ -77,6 +81,9 @@ fun SearchScreen(
     val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE) // Button color based on theme
 
     Scaffold(
+        topBar = {
+            TopAppBarTitle(title = "Search Artworks") // Используем наш компонент TopAppBarTitle
+        },
         content = { paddingValues ->
             LazyColumn(
                 contentPadding = PaddingValues(
@@ -88,122 +95,40 @@ fun SearchScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
+                item { SearchHeader() } // Используем наш компонент SearchHeader
                 item {
-                    Text(
-                        text = "Search",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(vertical = 16.dp)
-                    )
-                }
-
-                item {
-                    // Text field for search input
-                    OutlinedTextField(
-                        value = searchText,
-                        onValueChange = {
-                            searchText = it
-                            if (it.length >= 3) {
-                                coroutineScope.launch {
-                                    searchViewModel.fetchSearchSuggestions(it) // Fetch search suggestions
-                                }
+                    SearchInputField(
+                        searchText = searchText,
+                        onSearchTextChanged = { newText ->
+                            searchText = newText
+                            if (newText.length >= 3) {
+                                coroutineScope.launch { searchViewModel.fetchSearchSuggestions(newText) }
                             }
                         },
-                        label = { Text("Search") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(onSearch = {
-                            if (searchText.isNotBlank()) { // Check if search text is not blank before executing search
-                                coroutineScope.launch {
-                                    searchViewModel.searchArtworks(searchText) // Execute search
-                                }
-                                searchText = ""
-                            }
-                        }),
-                        singleLine = true,
-                        shape = RoundedCornerShape(8.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = buttonColor, // Border color when focused
-                            unfocusedBorderColor = buttonColor, // Border color when not focused
-                            cursorColor = MaterialTheme.colorScheme.primary
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Modern search button
-                    Button(
-                        onClick = {
-                            if (searchText.isNotBlank()) { // Check if search text is not blank before executing search
-                                coroutineScope.launch {
-                                    searchViewModel.searchArtworks(searchText) // Execute search on button click
-                                }
+                        onSearchTriggered = {
+                            if (searchText.isNotBlank()) {
+                                coroutineScope.launch { searchViewModel.searchArtworks(searchText) }
                                 searchText = ""
                             }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = buttonColor,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        shape = RoundedCornerShape(12.dp) // Rounded corners for modern look
-                    ) {
-                        Text(
-                            "Search",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                        buttonColor = buttonColor
+                    )
                 }
-
-                val limitedSuggestions = suggestions.take(3) // Limit number of suggestions
-
-                // Display suggestions below text field
-                if (limitedSuggestions.isNotEmpty() && searchText.isNotEmpty()) {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
-                                .padding(8.dp)
-                        ) {
-                            limitedSuggestions.forEach { suggestion ->
-                                Text(
-                                    text = suggestion,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            searchText = suggestion
-                                            coroutineScope.launch {
-                                                searchViewModel.searchArtworks(suggestion) // Search by selected suggestion
-                                            }
-                                        }
-                                        .padding(8.dp),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                item {
+                    SuggestionsList(
+                        suggestions = suggestions,
+                        searchText = searchText,
+                        onSuggestionClicked = { suggestion ->
+                            searchText = suggestion
+                            coroutineScope.launch { searchViewModel.searchArtworks(suggestion) }
                         }
-                    }
+                    )
                 }
-
-                // Display error message if exists
                 if (error != null) {
                     item {
-                        Text(
-                            text = error ?: "",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                        )
+                        ErrorView(errorMessage = error) // Используем ErrorView для отображения сообщения об ошибке
                     }
                 }
-
-                // Display "Search Results" header
                 if (searchResults.itemCount > 0) {
                     item {
                         Text(
@@ -213,15 +138,13 @@ fun SearchScreen(
                         )
                     }
                 }
-
-                // Display search results using LazyVerticalGrid
                 items(searchResults.itemCount) { index ->
                     searchResults[index]?.let { artwork ->
                         val isFavorite = remember { mutableStateOf(false) }
                         val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
 
                         LaunchedEffect(key1 = artwork.objectId) {
-                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0) // Check if artwork is favorite
+                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
                         }
 
                         if (showCard) {

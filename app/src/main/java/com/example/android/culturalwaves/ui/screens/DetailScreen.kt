@@ -53,8 +53,11 @@ import com.example.android.culturalwaves.data.entities.Artist
 import com.example.android.culturalwaves.data.entities.ImageDetail
 import com.example.android.culturalwaves.ui.components.ArtistSection
 import com.example.android.culturalwaves.ui.components.ArtworkImage
+import com.example.android.culturalwaves.ui.components.ErrorView
 import com.example.android.culturalwaves.ui.components.ImageGallery
+import com.example.android.culturalwaves.ui.components.LoadingView
 import com.example.android.culturalwaves.ui.components.SimpleDetailSection
+import com.example.android.culturalwaves.ui.components.SuccessView
 import com.example.android.culturalwaves.ui.components.ZoomableImageScreen
 import com.example.android.culturalwaves.ui.navigation.Screen
 import com.example.android.culturalwaves.viewmodel.ArtworkDetailViewModel
@@ -72,78 +75,27 @@ fun DetailScreen(navController: NavHostController, objectId: Int) {
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
 
     Scaffold { padding ->
-        if (isLoading) {
-            // Отображение индикатора загрузки, если данные загружаются
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        when {
+            isLoading -> {
+                LoadingView() // Отображение индикатора загрузки
             }
-        } else if (error != null) {
-            // Отображение сообщения об ошибке, если произошла ошибка
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = error ?: "Unknown Error",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.Center)
+            error != null -> {
+                ErrorView(errorMessage = error) // Отображение сообщения об ошибке
+            }
+            else -> {
+                SuccessView(
+                    padding = padding,
+                    artworkDetailState = artworkDetailState,
+                    showDialog = showDialog,
+                    selectedImageUrl = selectedImageUrl,
+                    onImageClick = { imageUrl ->
+                        selectedImageUrl = imageUrl
+                        showDialog = true
+                    },
+                    onDismissRequest = { showDialog = false }
                 )
             }
-        } else {
-            // Отображение деталей произведения искусства, если данные успешно загружены
-            artworkDetailState?.let { artworkDetail ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(WindowInsets.navigationBars.asPaddingValues())
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // Заголовок
-                    Text(
-                        text = artworkDetail.title ?: "Artwork Details",
-                        style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .background(MaterialTheme.colorScheme.background)
-                    )
-
-                    // Изображение
-                    artworkDetail.imageUrl?.let { imageUrl ->
-                        Image(
-                            painter = rememberAsyncImagePainter(imageUrl),
-                            contentDescription = artworkDetail.title,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1.5f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .padding(horizontal = 16.dp)
-                                .clickable {
-                                    selectedImageUrl = imageUrl
-                                    showDialog = true
-                                }
-                        )
-                    }
-
-                    // Описание и другие детали
-                    SimpleDetailSection("Description:", artworkDetail.description)
-                    SimpleDetailSection("Technique:", artworkDetail.technique)
-                    SimpleDetailSection("Provenance:", artworkDetail.provenance)
-                    SimpleDetailSection("Period:", artworkDetail.period)
-                    SimpleDetailSection("Dimensions:", artworkDetail.dimensions)
-
-                    ArtistSection(artworkDetail.people)
-
-                    ImageGallery(artworkDetail.images)
-                }
-            }
-        }
-    }
-
-    selectedImageUrl?.let { imageUrl ->
-        if (showDialog) {
-            ZoomableImageScreen(imageUrl = imageUrl, onDismissRequest = { showDialog = false })
         }
     }
 }
-
 
