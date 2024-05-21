@@ -26,6 +26,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.android.culturalwaves.R
 
 
+
 @Composable
 fun ArtworkImage(
     imageUrl: String,
@@ -44,10 +45,7 @@ fun ArtworkImage(
         contentScale = ContentScale.Crop,
         loading = {
             Box(modifier = Modifier.matchParentSize()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
-                )
+                AnimatedLogo() // Используем анимированный логотип
             }
         },
         error = {
@@ -70,5 +68,3 @@ fun ArtworkImage(
         }
     )
 }
-
-
