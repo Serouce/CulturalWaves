@@ -53,6 +53,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val mainViewModel: MainViewModel = koinViewModel()
@@ -65,116 +66,112 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val error by mainViewModel.error.collectAsState()
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            listState.animateScrollToItem(0)
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .alpha(0.7f),
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
-                }
-            }
-        ) { padding ->
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isLoading),
-                onRefresh = { mainViewModel.refreshArtworks() }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .alpha(0.7f),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                LazyColumn(
-                    state = listState,
-                    contentPadding = PaddingValues(
-                        top = padding.calculateTopPadding() + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-                        bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
-                        start = 16.dp,
-                        end = 16.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    item {
-                        TopAppBarTitle(title = "Artworks") // Используем TopAppBarTitle для заголовка
-                    }
+                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
+            }
+        }
+    ) { padding ->
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isLoading),
+            onRefresh = { mainViewModel.refreshArtworks() }
+        ) {
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(
+                    top = 0.dp,
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(8.dp), // Уменьшили отступ между элементами
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+                    TopAppBarTitle(title = "Artworks") // Используем TopAppBarTitle для заголовка
+                }
 
-                    item {
-                        Text(
-                            text = "Choose a Category",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    }
+                item {
+                    Text(
+                        text = "Choose a Category",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
 
+                item {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    ) {
+                        items(CategoryUtils.getCategories()) { (category, imageRes) ->
+                            CategoryCard(
+                                category = category,
+                                imageRes = imageRes,
+                                isSelected = currentClassification == category,
+                                onClick = { mainViewModel.toggleClassification(category) }
+                            )
+                        }
+                    }
+                }
+
+                if (error != null) {
                     item {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        ) {
-                            items(CategoryUtils.getCategories()) { (category, imageRes) ->
-                                CategoryCard(
-                                    category = category,
-                                    imageRes = imageRes,
-                                    isSelected = currentClassification == category,
-                                    onClick = { mainViewModel.toggleClassification(category) }
-                                )
+                        ErrorView(errorMessage = error) // Используем ErrorView для отображения сообщения об ошибке
+                    }
+                } else {
+                    items(artworks.itemCount) { index ->
+                        artworks[index]?.let { artwork ->
+                            val isFavorite = remember { mutableStateOf(false) }
+                            val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
+
+                            LaunchedEffect(key1 = artwork.objectId) {
+                                isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
                             }
-                        }
-                    }
 
-                    if (error != null) {
-                        item {
-                            ErrorView(errorMessage = error) // Используем ErrorView для отображения сообщения об ошибке
-                        }
-                    } else {
-                        items(artworks.itemCount) { index ->
-                            artworks[index]?.let { artwork ->
-                                val isFavorite = remember { mutableStateOf(false) }
-                                val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
-
-                                LaunchedEffect(key1 = artwork.objectId) {
-                                    isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
-                                }
-
-                                if (showCard) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .wrapContentSize(Alignment.Center)
-                                    ) {
-                                        CardTemplate(
-                                            imageUrl = artwork.imageUrl ?: "",
-                                            title = artwork.title ?: "No Title",
-                                            artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
-                                            objectId = artwork.objectId ?: 0,
-                                            isFavorite = isFavorite.value,
-                                            onFavoriteClick = {
-                                                if (isFavorite.value) {
-                                                    artwork.objectId?.let { id ->
-                                                        favoriteViewModel.removeFavorite(
-                                                            FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "")
-                                                        )
-                                                    }
-                                                } else {
-                                                    favoriteViewModel.addFavorite(
-                                                        FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "")
+                            if (showCard) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentSize(Alignment.Center)
+                                ) {
+                                    CardTemplate(
+                                        imageUrl = artwork.imageUrl ?: "",
+                                        title = artwork.title ?: "No Title",
+                                        artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+                                        objectId = artwork.objectId ?: 0,
+                                        isFavorite = isFavorite.value,
+                                        onFavoriteClick = {
+                                            if (isFavorite.value) {
+                                                artwork.objectId?.let { id ->
+                                                    favoriteViewModel.removeFavorite(
+                                                        FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "")
                                                     )
                                                 }
-                                                isFavorite.value = !isFavorite.value
-                                            },
-                                            onCardClick = onArtworkSelected,
-                                            onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
-                                            cardWidth = 300.dp,
-                                            cardHeight = 301.dp
-                                        )
-                                    }
+                                            } else {
+                                                favoriteViewModel.addFavorite(
+                                                    FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "")
+                                                )
+                                            }
+                                            isFavorite.value = !isFavorite.value
+                                        },
+                                        onCardClick = onArtworkSelected,
+                                        onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
+                                        cardWidth = 300.dp,
+                                        cardHeight = 301.dp
+                                    )
                                 }
                             }
                         }
@@ -184,5 +181,7 @@ fun MainScreen(onArtworkSelected: (Int) -> Unit) {
         }
     }
 }
+
+
 
 

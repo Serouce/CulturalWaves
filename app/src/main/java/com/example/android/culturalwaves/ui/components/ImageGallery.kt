@@ -9,8 +9,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.culturalwaves.data.entities.ImageDetail
 
+//@Composable
+//fun ImageGallery(images: List<ImageDetail>?) {
+//    images?.let {
+//        if (it.isNotEmpty()) {
+//            LazyRow(
+//                modifier = Modifier.padding(horizontal = 16.dp),
+//                horizontalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//                items(it) { imageDetail ->
+//                    ImageThumbnail(imageDetail)
+//                }
+//            }
+//        }
+//    }
+//}
+
 @Composable
-fun ImageGallery(images: List<ImageDetail>?) {
+fun ImageGallery(images: List<ImageDetail>?, onImageClick: (String) -> Unit) {
     images?.let {
         if (it.isNotEmpty()) {
             LazyRow(
@@ -18,7 +34,7 @@ fun ImageGallery(images: List<ImageDetail>?) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(it) { imageDetail ->
-                    ImageThumbnail(imageDetail)
+                    ImageThumbnail(imageDetail, onImageClick)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.example.android.culturalwaves.ui.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,15 +19,43 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.android.culturalwaves.data.entities.ImageDetail
 
+//@Composable
+//fun ImageThumbnail(imageDetail: ImageDetail) {
+//    SubcomposeAsyncImage(
+//        model = imageDetail.baseImageUrl,
+//        contentDescription = imageDetail.description,
+//        modifier = Modifier
+//            .size(100.dp)
+//            .clip(RoundedCornerShape(8.dp))
+//            .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp)),
+//        contentScale = ContentScale.Crop,
+//        loading = {
+//            Box(modifier = Modifier.matchParentSize()) {
+//                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//            }
+//        },
+//        error = {
+//            Icon(
+//                Icons.Default.Close,
+//                contentDescription = "Load error",
+//                modifier = Modifier.matchParentSize()
+//            )
+//        }
+//    )
+//}
+
 @Composable
-fun ImageThumbnail(imageDetail: ImageDetail) {
+fun ImageThumbnail(imageDetail: ImageDetail, onImageClick: (String) -> Unit) {
+    val imageUrl = imageDetail.baseImageUrl?.toString() ?: ""
+
     SubcomposeAsyncImage(
-        model = imageDetail.baseImageUrl,
+        model = imageUrl,
         contentDescription = imageDetail.description,
         modifier = Modifier
             .size(100.dp)
             .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp)),
+            .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
+            .clickable { onImageClick(imageUrl) }, // Добавляем обработчик клика
         contentScale = ContentScale.Crop,
         loading = {
             Box(modifier = Modifier.matchParentSize()) {

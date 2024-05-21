@@ -122,6 +122,13 @@ dependencies {
     // Coil для загрузки изображений в Compose
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    testImplementation ("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito:mockito-inline:5.12.0")
+    testImplementation ("org.robolectric:robolectric:4.12.2")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0-RC3")
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

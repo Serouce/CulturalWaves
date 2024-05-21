@@ -99,3 +99,4 @@ fun DetailScreen(navController: NavHostController, objectId: Int) {
     }
 }
 
+

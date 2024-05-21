@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 
 //@Composable
@@ -94,40 +95,59 @@ fun ZoomableImageScreen(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var imageSize by remember { mutableStateOf(androidx.compose.ui.geometry.Size.Zero) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    scale = (scale * zoom).coerceIn(1f, 4f)  // Ограничение масштаба от 1 до 4
-                    offsetX = (offsetX + pan.x).coerceIn(
-                        -imageSize.width * (scale - 1) / 2,
-                        imageSize.width * (scale - 1) / 2
-                    )
-                    offsetY = (offsetY + pan.y).coerceIn(
-                        -imageSize.height * (scale - 1) / 2,
-                        imageSize.height * (scale - 1) / 2
-                    )
-                }
-            }
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                translationX = offsetX,
-                translationY = offsetY
-            )
-            .clickable { onDismissRequest() } // Закрытие по клику на изображение
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false // Use full screen width
+        )
     ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .onGloballyPositioned { coordinates ->
-                    imageSize = coordinates.size.toSize()
+                .background(Color.Black)
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        scale = (scale * zoom).coerceIn(1f, 4f)  // Ограничение масштаба от 1 до 4
+                        offsetX = (offsetX + pan.x).coerceIn(
+                            -imageSize.width * (scale - 1) / 2,
+                            imageSize.width * (scale - 1) / 2
+                        )
+                        offsetY = (offsetY + pan.y).coerceIn(
+                            -imageSize.height * (scale - 1) / 2,
+                            imageSize.height * (scale - 1) / 2
+                        )
+                    }
                 }
-        )
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    translationX = offsetX,
+                    translationY = offsetY
+                )
+        ) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onGloballyPositioned { coordinates ->
+                        imageSize = coordinates.size.toSize()
+                    }
+            )
+            IconButton(
+                onClick = { onDismissRequest() },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color.White
+                )
+            }
+        }
     }
 }
