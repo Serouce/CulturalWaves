@@ -1,8 +1,8 @@
 plugins {
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("kapt")
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 
 
 
@@ -23,10 +23,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
 
-
         }
 
-
+        val apiKey: String? = project.findProperty("API_KEY") as String?
+        buildConfigField("String", "API_KEY", "\"${apiKey}\"")
 
 
     }
@@ -49,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -97,7 +98,7 @@ dependencies {
 
     //Пагинация
 
-    implementation("androidx.paging:paging-compose:3.3.0-rc01")
+    implementation("androidx.paging:paging-compose:3.3.0")
 
 
     //Koin
@@ -122,11 +123,6 @@ dependencies {
     // Coil для загрузки изображений в Compose
     implementation("io.coil-kt:coil-compose:2.6.0")
 
-    testImplementation ("org.mockito:mockito-core:5.12.0")
-    testImplementation("org.mockito:mockito-inline:5.12.0")
-    testImplementation ("org.robolectric:robolectric:4.12.2")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0-RC3")
 
 
     implementation(libs.androidx.core.ktx)
@@ -143,4 +139,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("keyToIgnore")
+    ignoreList.add("sdk.*")
 }

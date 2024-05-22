@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -40,9 +41,14 @@ fun CategoryCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.surfaceVariant
+    // Устанавливаем цвета фона карточек в зависимости от темы
+    val backgroundColor = if (isSelected) {
+        MaterialTheme.colorScheme.inverseOnSurface
+    } else {
+        if (isSystemInDarkTheme()) Color(0xFF455A64) else Color(0xFF90A4AE)
+    }
     val elevation by animateDpAsState(if (isSelected) 12.dp else 4.dp, label = "")
-    val scale by animateFloatAsState(if (isSelected) 1.15f else 1f, label = "")
+    val scale by animateFloatAsState(if (isSelected) 1.10f else 1f, label = "")
 
     Card(
         modifier = Modifier

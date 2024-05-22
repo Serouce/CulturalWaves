@@ -52,3 +52,4 @@ enum class GradientType(val colors: List<Color>) {
 fun getGradientBrush(gradientType: GradientType): Brush {
     return Brush.verticalGradient(colors = gradientType.colors)
 }
+

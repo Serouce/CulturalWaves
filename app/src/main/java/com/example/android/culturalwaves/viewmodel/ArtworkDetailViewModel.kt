@@ -11,26 +11,6 @@ import kotlinx.coroutines.launch
 import com.example.android.culturalwaves.utils.Result
 
 
-//class ArtworkDetailViewModel(
-//    private val artRepository: ArtRepository,
-//    private val objectId: Int
-//) : ViewModel() {
-//
-//    private val _artworkDetails = MutableStateFlow<ArtworkDetailResponse?>(null)
-//    val artworkDetails: StateFlow<ArtworkDetailResponse?> = _artworkDetails.asStateFlow()
-//
-//    init {
-//        fetchArtworkDetails()
-//    }
-//
-//    private fun fetchArtworkDetails() {
-//        viewModelScope.launch {
-//            _artworkDetails.value = artRepository.fetchArtworkDetails(objectId)
-//        }
-//    }
-//}
-
-
 class ArtworkDetailViewModel(private val artRepository: ArtRepository, private val objectId: Int) : BaseViewModel() {
     private val _artworkDetails = MutableStateFlow<ArtworkDetailResponse?>(null)
     val artworkDetails: StateFlow<ArtworkDetailResponse?> get() = _artworkDetails.asStateFlow()

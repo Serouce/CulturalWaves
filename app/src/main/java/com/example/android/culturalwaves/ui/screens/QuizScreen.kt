@@ -36,9 +36,111 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.android.culturalwaves.R
+import com.example.android.culturalwaves.ui.components.AnimatedLogo
+import com.example.android.culturalwaves.ui.components.ErrorView
 import com.example.android.culturalwaves.viewmodel.QuizViewModel
 import org.koin.androidx.compose.koinViewModel
 
+
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun QuizScreen() {
+//    val quizViewModel: QuizViewModel = koinViewModel()
+//    val quizQuestion by quizViewModel.quizQuestion.collectAsState()
+//    val quizResult by quizViewModel.quizResult.collectAsState()
+//    var userAnswer by remember { mutableStateOf("") }
+//
+//    val isDarkTheme = isSystemInDarkTheme()
+//    val buttonColor = if (isDarkTheme) Color(0xFF455A64) else Color(0xFF90A4AE)
+//    val cardBackgroundPainter = if (isDarkTheme) painterResource(id = R.drawable.back_4) else painterResource(id = R.drawable.background)
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = { Text("Квиз по культуре") },
+//            )
+//        },
+//        content = { padding ->
+//            LazyColumn(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(padding)
+//                    .padding(16.dp),
+//                verticalArrangement = Arrangement.spacedBy(16.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                item {
+//                    Card(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(16.dp),
+//                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+//                    ) {
+//                        Box(
+//                            modifier = Modifier.fillMaxWidth()
+//                        ) {
+//                            Image(
+//                                painter = cardBackgroundPainter,
+//                                contentDescription = null,
+//                                contentScale = ContentScale.Crop,
+//                                modifier = Modifier.matchParentSize()
+//                            )
+//                            Text(
+//                                text = if (quizResult.isNotEmpty()) "Результат: $quizResult" else quizQuestion,
+//                                style = MaterialTheme.typography.bodyLarge,
+//                                color = Color.White,
+//                                modifier = Modifier.padding(16.dp)
+//                            )
+//                        }
+//                    }
+//                }
+//
+//                if (quizResult.isEmpty()) {
+//                    itemsIndexed(listOf("A", "B", "C", "D")) { index, option ->
+//                        Button(
+//                            onClick = {
+//                                userAnswer = option
+//                                quizViewModel.checkQuizAnswer(quizQuestion, userAnswer)
+//                            },
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(vertical = 4.dp),
+//                            colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+//                        ) {
+//                            Text(
+//                                text = option,
+//                                style = MaterialTheme.typography.bodyLarge,
+//                                color = Color.White
+//                            )
+//                        }
+//                    }
+//                }
+//
+//                item {
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                }
+//
+//                item {
+//                    Button(
+//                        onClick = {
+//                            quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
+//                            userAnswer = ""
+//                        },
+//                        modifier = Modifier.fillMaxWidth(),
+//                        colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+//                    ) {
+//                        Text(
+//                            text = "Новый вопрос",
+//                            style = MaterialTheme.typography.bodyLarge,
+//                            color = Color.White
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    )
+//}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +149,8 @@ fun QuizScreen() {
     val quizViewModel: QuizViewModel = koinViewModel()
     val quizQuestion by quizViewModel.quizQuestion.collectAsState()
     val quizResult by quizViewModel.quizResult.collectAsState()
+    val isLoading by quizViewModel.isLoading.collectAsState()
+    val error by quizViewModel.error.collectAsState()
     var userAnswer by remember { mutableStateOf("") }
 
     val isDarkTheme = isSystemInDarkTheme()
@@ -60,84 +164,95 @@ fun QuizScreen() {
             )
         },
         content = { padding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Image(
-                                painter = cardBackgroundPainter,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.matchParentSize()
-                            )
-                            Text(
-                                text = if (quizResult.isNotEmpty()) "Результат: $quizResult" else quizQuestion,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                    }
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    AnimatedLogo()
                 }
-
-                if (quizResult.isEmpty()) {
-                    itemsIndexed(listOf("A", "B", "C", "D")) { index, option ->
-                        Button(
-                            onClick = {
-                                userAnswer = option
-                                quizViewModel.checkQuizAnswer(quizQuestion, userAnswer)
-                            },
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp),
+                                .padding(16.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Image(
+                                    painter = cardBackgroundPainter,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.matchParentSize()
+                                )
+                                Text(
+                                    text = if (quizResult.isNotEmpty()) "Результат: $quizResult" else quizQuestion,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    if (quizResult.isEmpty()) {
+                        itemsIndexed(listOf("A", "B", "C", "D")) { index, option ->
+                            Button(
+                                onClick = {
+                                    userAnswer = option
+                                    quizViewModel.checkQuizAnswer(quizQuestion, userAnswer)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
+                            ) {
+                                Text(
+                                    text = option,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        Button(
+                            onClick = {
+                                quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
+                                userAnswer = ""
+                            },
+                            modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                         ) {
                             Text(
-                                text = option,
+                                text = "Новый вопрос",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = Color.White
                             )
                         }
                     }
-                }
 
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-
-                item {
-                    Button(
-                        onClick = {
-                            quizViewModel.generateQuizQuestion("Задай квиз-вопрос по теме культуры и эстетики с 4 вариантами ответов: A, B, C и D.")
-                            userAnswer = ""
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
-                    ) {
-                        Text(
-                            text = "Новый вопрос",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White
-                        )
+                    // Отображение ошибки, если она есть
+                    if (error != null) {
+                        item {
+                            ErrorView(errorMessage = error)
+                        }
                     }
                 }
             }
         }
     )
 }
-
-
