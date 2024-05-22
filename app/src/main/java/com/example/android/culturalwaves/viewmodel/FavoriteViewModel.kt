@@ -6,63 +6,91 @@ import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import com.example.android.culturalwaves.data.repositories.FavoriteArtRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+
+
 
 //class FavoriteViewModel(private val favoriteArtRepository: FavoriteArtRepository) : ViewModel() {
 //
 //    private val _favoriteArtworks = MutableStateFlow<List<FavoriteArtwork>>(emptyList())
 //    val favoriteArtworks: StateFlow<List<FavoriteArtwork>> = _favoriteArtworks
 //
+//    private val _sortOrder = MutableStateFlow(SortOrder.NEWEST_FIRST)
+//    val sortOrder: StateFlow<SortOrder> = _sortOrder
+//
 //    init {
 //        viewModelScope.launch {
-//            favoriteArtRepository.getAllFavorites().collect { favorites ->
-//                _favoriteArtworks.value = favorites
+//            combine(
+//                favoriteArtRepository.getAllFavoritesNewestFirst(),
+//                _sortOrder
+//            ) { favorites, order ->
+//                when (order) {
+//                    SortOrder.NEWEST_FIRST -> favorites.sortedByDescending { it.dateAdded }
+//                    SortOrder.OLDEST_FIRST -> favorites.sortedBy { it.dateAdded }
+//                }
+//            }.collect { sortedFavorites ->
+//                _favoriteArtworks.value = sortedFavorites
 //            }
 //        }
 //    }
 //
-//    // Добавление в избранное
+//    fun setSortOrder(order: SortOrder) {
+//        _sortOrder.value = order
+//    }
+//
 //    fun addFavorite(artwork: FavoriteArtwork) {
 //        viewModelScope.launch {
 //            favoriteArtRepository.addFavorite(artwork)
 //        }
 //    }
 //
-//    // Удаление из избранного
 //    fun removeFavorite(artwork: FavoriteArtwork) {
 //        viewModelScope.launch {
 //            favoriteArtRepository.removeFavorite(artwork)
 //        }
 //    }
 //
-//    // Проверка, является ли произведение избранным
 //    suspend fun isFavorite(objectId: Int): Boolean {
 //        return favoriteArtRepository.getFavoriteById(objectId) != null
 //    }
 //}
+//
+//enum class SortOrder {
+//    NEWEST_FIRST,
+//    OLDEST_FIRST
+//}
 
+
+enum class SortOrder {
+    NEWEST_FIRST,
+    OLDEST_FIRST
+}
 
 class FavoriteViewModel(private val favoriteArtRepository: FavoriteArtRepository) : ViewModel() {
 
     private val _favoriteArtworks = MutableStateFlow<List<FavoriteArtwork>>(emptyList())
-    val favoriteArtworks: StateFlow<List<FavoriteArtwork>> = _favoriteArtworks
+    val favoriteArtworks: StateFlow<List<FavoriteArtwork>> get() = _favoriteArtworks
 
     private val _sortOrder = MutableStateFlow(SortOrder.NEWEST_FIRST)
-    val sortOrder: StateFlow<SortOrder> = _sortOrder
+    val sortOrder: StateFlow<SortOrder> get() = _sortOrder
 
     init {
         viewModelScope.launch {
-            combine(
-                favoriteArtRepository.getAllFavoritesNewestFirst(),
-                _sortOrder
-            ) { favorites, order ->
+            _sortOrder.collectLatest { order ->
                 when (order) {
-                    SortOrder.NEWEST_FIRST -> favorites.sortedByDescending { it.dateAdded }
-                    SortOrder.OLDEST_FIRST -> favorites.sortedBy { it.dateAdded }
+                    SortOrder.NEWEST_FIRST -> {
+                        favoriteArtRepository.getAllFavoritesNewestFirst().collect {
+                            _favoriteArtworks.value = it
+                        }
+                    }
+                    SortOrder.OLDEST_FIRST -> {
+                        favoriteArtRepository.getAllFavoritesOldestFirst().collect {
+                            _favoriteArtworks.value = it
+                        }
+                    }
                 }
-            }.collect { sortedFavorites ->
-                _favoriteArtworks.value = sortedFavorites
             }
         }
     }
@@ -86,9 +114,4 @@ class FavoriteViewModel(private val favoriteArtRepository: FavoriteArtRepository
     suspend fun isFavorite(objectId: Int): Boolean {
         return favoriteArtRepository.getFavoriteById(objectId) != null
     }
-}
-
-enum class SortOrder {
-    NEWEST_FIRST,
-    OLDEST_FIRST
 }
