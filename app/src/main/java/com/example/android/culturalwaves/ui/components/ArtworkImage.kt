@@ -25,14 +25,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.android.culturalwaves.R
 
-
-
 @Composable
 fun ArtworkImage(
     imageUrl: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    onError: () -> Unit // Добавлен параметр onError
+    onError: () -> Unit
 ) {
     var hasError by remember { mutableStateOf(false) }
 
@@ -40,29 +38,29 @@ fun ArtworkImage(
         model = imageUrl,
         contentDescription = contentDescription,
         modifier = modifier
-            .fillMaxWidth() // Устанавливаем ширину изображения на максимальную доступную
-            .aspectRatio(1f), // Сохраняем соотношение сторон, можно адаптировать под нужные пропорции
+            .fillMaxWidth()
+            .aspectRatio(1f),
         contentScale = ContentScale.Crop,
         loading = {
             Box(modifier = Modifier.matchParentSize()) {
-                AnimatedLogo() // Используем анимированный логотип
+                AnimatedLogo()
             }
         },
         error = {
             hasError = true
-            onError() // Вызов onError при ошибке загрузки изображения
+            onError()
             Box(modifier = Modifier.matchParentSize()) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "Ошибка загрузки",
+                    contentDescription = "Loading error",
                     modifier = Modifier.align(Alignment.Center),
                     tint = MaterialTheme.colorScheme.error
                 )
                 Text(
-                    "Ошибка загрузки",
+                    "Loading error",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.Center) // Правильно центрируем текст внутри Box
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
         }

@@ -11,8 +11,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SimpleDetailSection(label: String, content: String?) {
     content?.let {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Text(label, style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.outline))
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Text(
+                label,
+                style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.outline))
             Text(it, style = MaterialTheme.typography.bodyMedium)
         }
     }

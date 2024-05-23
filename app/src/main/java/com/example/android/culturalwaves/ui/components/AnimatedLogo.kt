@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.example.android.culturalwaves.R
 
-
 @Composable
 fun AnimatedLogo() {
     val infiniteTransition = rememberInfiniteTransition(label = "")
@@ -36,13 +35,14 @@ fun AnimatedLogo() {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Image(
-            painter = painterResource(id = R.drawable.ic_cultural), // Замените на ваш логотип
+            painter = painterResource(id = R.drawable.ic_cultural),
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp) // Задайте нужный размер
+                .size(100.dp)
                 .graphicsLayer(alpha = alpha)
-                .alpha(0.5f), // Сделаем изображение полупрозрачным
-            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(androidx.compose.ui.graphics.Color.Gray)
+                .alpha(0.5f),
+            colorFilter = androidx.compose.ui.graphics.ColorFilter
+                .tint(androidx.compose.ui.graphics.Color.Gray)
         )
     }
 }

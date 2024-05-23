@@ -11,13 +11,12 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun LoadingView() {
-    // Box для покрытия всего экрана затемненным фоном и логотипом загрузки
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black.copy(alpha = 0.3f)), // Полупрозрачный черный фон
-        contentAlignment = Alignment.Center // Центрирование контента
+            .background(color = Color.Black.copy(alpha = 0.3f)),
+        contentAlignment = Alignment.Center
     ) {
-        AnimatedLogo() // Вставляем анимированный логотип
+        AnimatedLogo()
     }
 }

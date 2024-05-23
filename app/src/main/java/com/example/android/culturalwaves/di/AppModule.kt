@@ -16,7 +16,6 @@ import com.example.android.culturalwaves.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-// Network module
 val networkModule = module {
     single { RetrofitClient.instance }
     single { GeminiRetrofitClient.instance }

@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchInputField(
@@ -39,7 +38,7 @@ fun SearchInputField(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { onSearchTriggered() }), // Исправлено
+            keyboardActions = KeyboardActions(onSearch = { onSearchTriggered() }),
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(

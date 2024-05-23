@@ -4,7 +4,9 @@ import com.example.android.culturalwaves.data.dao.FavoriteArtworkDao
 import com.example.android.culturalwaves.data.entities.FavoriteArtwork
 import kotlinx.coroutines.flow.Flow
 
-class FavoriteArtRepositoryImpl(private val favoriteArtworkDao: FavoriteArtworkDao) : FavoriteArtRepository {
+class FavoriteArtRepositoryImpl(
+    private val favoriteArtworkDao: FavoriteArtworkDao
+) : FavoriteArtRepository {
     override suspend fun addFavorite(artwork: FavoriteArtwork) {
         favoriteArtworkDao.insert(artwork)
     }

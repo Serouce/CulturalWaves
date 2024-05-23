@@ -8,6 +8,7 @@ import com.example.android.culturalwaves.data.entities.Artwork
 import com.example.android.culturalwaves.data.entities.ArtworkDetailResponse
 import com.example.android.culturalwaves.data.network.ArtMuseumApiService
 import com.example.android.culturalwaves.data.paging.ArtworkPagingSource
+import com.example.android.culturalwaves.utils.HARVARD_API_KEY
 import com.example.android.culturalwaves.utils.PagerConfigurator
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -15,8 +16,7 @@ import kotlinx.coroutines.flow.debounce
 import com.example.android.culturalwaves.utils.Result
 
 
-private const val API_KEY = "457bf8b1-0c12-46bd-8f80-bd7ff41905d6"
-
+private const val API_KEY = HARVARD_API_KEY
 
 class ArtRepositoryImpl(private val apiService: ArtMuseumApiService) : ArtRepository {
     private val pagerConfigurator = PagerConfigurator()
@@ -36,14 +36,15 @@ class ArtRepositoryImpl(private val apiService: ArtMuseumApiService) : ArtReposi
             .debounce(1000)
     }
 
-
     override suspend fun fetchArtworkDetails(objectId: Int): Result<ArtworkDetailResponse> {
         return try {
             val response = apiService.fetchArtworkDetails(objectId, API_KEY)
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
-                val exception = Exception("Failed to fetch artwork details: ${response.code()} ${response.message()}")
+                val exception = Exception("Failed to fetch artwork details: ${response.code()} " +
+                        response.message()
+                )
                 Log.e("ArtRepository", exception.message, exception)
                 Result.Error(exception)
             }
@@ -63,7 +64,8 @@ class ArtRepositoryImpl(private val apiService: ArtMuseumApiService) : ArtReposi
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
-                val exception = Exception("Failed to fetch artworks for suggestions: ${response.code()} ${response.message()}")
+                val exception = Exception("Failed to fetch artworks for suggestions:" +
+                        " ${response.code()} ${response.message()}")
                 Log.e("ArtRepository", exception.message, exception)
                 Result.Error(exception)
             }

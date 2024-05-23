@@ -8,7 +8,6 @@ data class GenerateContentRequest(
     val maxOutputTokens: Int = 1024
 )
 
-
 data class GenerateContentResponse(
     val candidates: List<Candidate>
 )

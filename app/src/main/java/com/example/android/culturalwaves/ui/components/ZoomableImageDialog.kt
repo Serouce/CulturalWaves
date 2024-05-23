@@ -31,60 +31,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 
-//@Composable
-//fun ZoomableImageDialog(
-//    imageUrl: String,
-//    onDismissRequest: () -> Unit
-//) {
-//    var scale by remember { mutableFloatStateOf(1f) }
-//    var offsetX by remember { mutableFloatStateOf(0f) }
-//    var offsetY by remember { mutableFloatStateOf(0f) }
-//
-//    Dialog(onDismissRequest = onDismissRequest) {
-//        Box(modifier = Modifier.fillMaxSize()) {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(Color.Black)
-//                    .pointerInput(Unit) {
-//                        detectTransformGestures { _, pan, zoom, _ ->
-//                            scale *= zoom
-//                            offsetX += pan.x
-//                            offsetY += pan.y
-//                        }
-//                    }
-//                    .graphicsLayer(
-//                        scaleX = scale,
-//                        scaleY = scale,
-//                        translationX = offsetX,
-//                        translationY = offsetY
-//                    )
-//            ) {
-//                AsyncImage(
-//                    model = imageUrl,
-//                    contentDescription = null,
-//                    contentScale = ContentScale.Fit,
-//                    modifier = Modifier.fillMaxSize()
-//                )
-//            }
-//            IconButton(
-//                onClick = { onDismissRequest() },
-//                modifier = Modifier
-//                    .align(Alignment.TopStart)
-//                    .padding(16.dp)
-//                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
-//            ) {
-//                Icon(
-//                    imageVector = Icons.Default.Close,
-//                    contentDescription = "Close",
-//                    tint = Color.White
-//                )
-//            }
-//        }
-//    }
-//}
-
-
 @Composable
 fun ZoomableImageScreen(
     imageUrl: String,
@@ -98,7 +44,7 @@ fun ZoomableImageScreen(
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
-            usePlatformDefaultWidth = false // Use full screen width
+            usePlatformDefaultWidth = false
         )
     ) {
         Box(
@@ -107,7 +53,7 @@ fun ZoomableImageScreen(
                 .background(Color.Black)
                 .pointerInput(Unit) {
                     detectTransformGestures { _, pan, zoom, _ ->
-                        scale = (scale * zoom).coerceIn(1f, 4f)  // Ограничение масштаба от 1 до 4
+                        scale = (scale * zoom).coerceIn(1f, 4f)
                         offsetX = (offsetX + pan.x).coerceIn(
                             -imageSize.width * (scale - 1) / 2,
                             imageSize.width * (scale - 1) / 2

@@ -23,6 +23,8 @@ fun ScrollToTopButton(onClick: () -> Unit) {
         containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimary
     ) {
-        Icon(painter = painterResource(id = R.drawable.ic_arrow_upward), contentDescription = "Scroll to top")
+        Icon(
+            painter = painterResource(id = R.drawable.ic_arrow_upward),
+            contentDescription = "Scroll to top")
     }
 }

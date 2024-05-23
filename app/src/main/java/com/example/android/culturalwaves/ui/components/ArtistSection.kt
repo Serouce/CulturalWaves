@@ -13,7 +13,9 @@ import com.example.android.culturalwaves.data.entities.Artist
 fun ArtistSection(people: List<Artist>?) {
     people?.let {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Artists and Roles:", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.outline))
+            Text("Artists and Roles:",
+                style = MaterialTheme.typography.titleMedium
+                    .copy(color = MaterialTheme.colorScheme.outline))
             it.forEach { person ->
                 Text(
                     "${person.name ?: "Unknown"} - ${person.role ?: "Unknown role"}",

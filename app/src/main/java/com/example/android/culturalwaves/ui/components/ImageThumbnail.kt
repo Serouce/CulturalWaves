@@ -19,34 +19,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.android.culturalwaves.data.entities.ImageDetail
 
-//@Composable
-//fun ImageThumbnail(imageDetail: ImageDetail) {
-//    SubcomposeAsyncImage(
-//        model = imageDetail.baseImageUrl,
-//        contentDescription = imageDetail.description,
-//        modifier = Modifier
-//            .size(100.dp)
-//            .clip(RoundedCornerShape(8.dp))
-//            .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp)),
-//        contentScale = ContentScale.Crop,
-//        loading = {
-//            Box(modifier = Modifier.matchParentSize()) {
-//                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//            }
-//        },
-//        error = {
-//            Icon(
-//                Icons.Default.Close,
-//                contentDescription = "Load error",
-//                modifier = Modifier.matchParentSize()
-//            )
-//        }
-//    )
-//}
-
 @Composable
 fun ImageThumbnail(imageDetail: ImageDetail, onImageClick: (String) -> Unit) {
-    val imageUrl = imageDetail.baseImageUrl?.toString() ?: ""
+    val imageUrl = imageDetail.baseImageUrl ?: ""
 
     SubcomposeAsyncImage(
         model = imageUrl,
@@ -55,7 +30,7 @@ fun ImageThumbnail(imageDetail: ImageDetail, onImageClick: (String) -> Unit) {
             .size(100.dp)
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
-            .clickable { onImageClick(imageUrl) }, // Добавляем обработчик клика
+            .clickable { onImageClick(imageUrl) },
         contentScale = ContentScale.Crop,
         loading = {
             Box(modifier = Modifier.matchParentSize()) {

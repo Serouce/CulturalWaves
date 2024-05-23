@@ -74,9 +74,15 @@ fun MainContent(
                 }
         ) {
             item { TopAppBarTitle(title = "Artworks") }
-            item { Text(text = "Choose a Category", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(vertical = 8.dp)) }
             item {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(vertical = 8.dp)) {
+                Text(
+                text = "Choose a Category",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp)) }
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(vertical = 8.dp)) {
                     items(CategoryUtils.getCategories()) { (category, imageRes) ->
                         CategoryCard(
                             category = category,
@@ -96,33 +102,47 @@ fun MainContent(
                         val showCard = artworkLoadStates[artwork.objectId ?: 0] ?: true
 
                         LaunchedEffect(key1 = artwork.objectId) {
-                            isFavorite.value = favoriteViewModel.isFavorite(artwork.objectId ?: 0)
+                            isFavorite.value = favoriteViewModel
+                                .isFavorite(artwork.objectId ?: 0)
                         }
 
                         if (showCard) {
-                            Box(modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.Center)) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentSize(Alignment.Center)) {
                                 CardTemplate(
                                     imageUrl = artwork.imageUrl ?: "",
                                     title = artwork.title ?: "No Title",
-                                    artist = artwork.people?.joinToString(separator = ", ") { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
+                                    artist = artwork.people?.joinToString(separator = ", ")
+                                    { artist -> artist.name ?: "Unknown Artist" } ?: "Unknown Artist",
                                     objectId = artwork.objectId ?: 0,
                                     isFavorite = isFavorite.value,
                                     onFavoriteClick = {
                                         if (isFavorite.value) {
                                             artwork.objectId?.let { id ->
                                                 favoriteViewModel.removeFavorite(
-                                                    FavoriteArtwork(id, artwork.title ?: "", artwork.imageUrl ?: "", "", System.currentTimeMillis())
+                                                    FavoriteArtwork(id, artwork.title ?: "",
+                                                        artwork.imageUrl ?: "",
+                                                        "",
+                                                        System.currentTimeMillis())
                                                 )
                                             }
                                         } else {
                                             favoriteViewModel.addFavorite(
-                                                FavoriteArtwork(artwork.objectId ?: 0, artwork.title ?: "", artwork.imageUrl ?: "", "", System.currentTimeMillis())
+                                                FavoriteArtwork(artwork.objectId ?: 0,
+                                                    artwork.title ?: "",
+                                                    artwork.imageUrl ?: "",
+                                                    "",
+                                                    System.currentTimeMillis())
                                             )
                                         }
                                         isFavorite.value = !isFavorite.value
                                     },
                                     onCardClick = onArtworkSelected,
-                                    onError = { mainViewModel.setArtworkLoadState(artwork.objectId ?: 0, false) },
+                                    onError = { mainViewModel.setArtworkLoadState(
+                                        artwork.objectId ?: 0, false
+                                    ) },
                                     cardWidth = 350.dp,
                                     cardHeight = 301.dp
                                 )

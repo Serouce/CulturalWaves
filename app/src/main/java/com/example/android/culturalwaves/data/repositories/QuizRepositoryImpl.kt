@@ -22,7 +22,8 @@ class QuizRepositoryImpl : QuizRepository {
     }
 
     override suspend fun checkQuizAnswer(question: String, userAnswer: String): String {
-        val inputContent = content { text("$question\nUser answer: $userAnswer\nIs this correct? Provide a brief explanation if the answer is incorrect.") }
+        val inputContent = content { text("$question\nUser answer: $userAnswer\n" +
+                "Is this correct? Provide a brief explanation if the answer is incorrect.") }
         return withContext(Dispatchers.IO) {
             try {
                 val response = generativeModel.generateContent(inputContent)

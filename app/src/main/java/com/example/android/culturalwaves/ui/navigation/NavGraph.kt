@@ -13,9 +13,6 @@ import com.example.android.culturalwaves.ui.screens.FavoriteScreen
 import com.example.android.culturalwaves.ui.screens.MainScreen
 import com.example.android.culturalwaves.ui.screens.SearchScreen
 
-
-
-
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.MainScreen.route) {

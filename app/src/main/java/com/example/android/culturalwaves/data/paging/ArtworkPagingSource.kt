@@ -19,12 +19,11 @@ class ArtworkPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Artwork> {
         val pageNumber = params.key ?: 1
         return try {
-            // Обновляем запрос, включая дополнительные параметры поиска
             val response = apiService.fetchArtworks(
                 apiKey,
                 pageNumber,
                 params.loadSize,
-                queryParams["classification"], // передаем параметр classification
+                queryParams["classification"],
                 "random",
                 queryParams["title"],
                 queryParams["person"],

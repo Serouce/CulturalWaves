@@ -7,70 +7,19 @@ import com.example.android.culturalwaves.data.repositories.FavoriteArtRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-
-
-
-//class FavoriteViewModel(private val favoriteArtRepository: FavoriteArtRepository) : ViewModel() {
-//
-//    private val _favoriteArtworks = MutableStateFlow<List<FavoriteArtwork>>(emptyList())
-//    val favoriteArtworks: StateFlow<List<FavoriteArtwork>> = _favoriteArtworks
-//
-//    private val _sortOrder = MutableStateFlow(SortOrder.NEWEST_FIRST)
-//    val sortOrder: StateFlow<SortOrder> = _sortOrder
-//
-//    init {
-//        viewModelScope.launch {
-//            combine(
-//                favoriteArtRepository.getAllFavoritesNewestFirst(),
-//                _sortOrder
-//            ) { favorites, order ->
-//                when (order) {
-//                    SortOrder.NEWEST_FIRST -> favorites.sortedByDescending { it.dateAdded }
-//                    SortOrder.OLDEST_FIRST -> favorites.sortedBy { it.dateAdded }
-//                }
-//            }.collect { sortedFavorites ->
-//                _favoriteArtworks.value = sortedFavorites
-//            }
-//        }
-//    }
-//
-//    fun setSortOrder(order: SortOrder) {
-//        _sortOrder.value = order
-//    }
-//
-//    fun addFavorite(artwork: FavoriteArtwork) {
-//        viewModelScope.launch {
-//            favoriteArtRepository.addFavorite(artwork)
-//        }
-//    }
-//
-//    fun removeFavorite(artwork: FavoriteArtwork) {
-//        viewModelScope.launch {
-//            favoriteArtRepository.removeFavorite(artwork)
-//        }
-//    }
-//
-//    suspend fun isFavorite(objectId: Int): Boolean {
-//        return favoriteArtRepository.getFavoriteById(objectId) != null
-//    }
-//}
-//
-//enum class SortOrder {
-//    NEWEST_FIRST,
-//    OLDEST_FIRST
-//}
-
 
 enum class SortOrder {
     NEWEST_FIRST,
     OLDEST_FIRST
 }
 
-class FavoriteViewModel(private val favoriteArtRepository: FavoriteArtRepository) : ViewModel() {
+class FavoriteViewModel(
+    private val favoriteArtRepository: FavoriteArtRepository
+) : ViewModel() {
 
-    private val _favoriteArtworks = MutableStateFlow<List<FavoriteArtwork>>(emptyList())
+    private val _favoriteArtworks
+    = MutableStateFlow<List<FavoriteArtwork>>(emptyList())
     val favoriteArtworks: StateFlow<List<FavoriteArtwork>> get() = _favoriteArtworks
 
     private val _sortOrder = MutableStateFlow(SortOrder.NEWEST_FIRST)

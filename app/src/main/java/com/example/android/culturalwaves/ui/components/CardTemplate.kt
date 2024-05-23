@@ -1,7 +1,5 @@
 package com.example.android.culturalwaves.ui.components
 
-
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,7 +38,6 @@ import com.example.android.culturalwaves.ui.theme.CulturalWavesTheme
 import com.example.android.culturalwaves.ui.theme.fontFamily
 import com.example.android.culturalwaves.utils.StringUtils
 
-
 @Composable
 fun CardTemplate(
     imageUrl: String,
@@ -50,34 +47,34 @@ fun CardTemplate(
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
     onCardClick: (Int) -> Unit,
-    onError: () -> Unit, // Добавлен параметр onError
-    cardWidth: Dp = 264.dp,  // Уменьшение ширины
-    cardHeight: Dp = 264.dp  // Уменьшение высоты
+    onError: () -> Unit,
+    cardWidth: Dp = 264.dp,
+    cardHeight: Dp = 264.dp
 ) {
-    val displayedTitle = remember(title) { StringUtils.truncateString(title, 32) } // Уменьшение длины заголовка
-    val displayedArtist = remember(artist) { StringUtils.truncateString(artist, 20) } // Уменьшение длины имени художника
+    val displayedTitle = remember(title) { StringUtils.truncateString(title, 32) }
+    val displayedArtist = remember(artist) { StringUtils.truncateString(artist, 20) }
 
     Card(
         modifier = Modifier
             .size(width = cardWidth, height = cardHeight)
             .clickable { onCardClick(objectId) }
-            .padding(8.dp), // Уменьшение отступа
+            .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp) // Уменьшение высоты тени
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             ArtworkImage(
                 imageUrl = imageUrl,
                 contentDescription = title,
                 modifier = Modifier.fillMaxSize(),
-                onError = onError // Передача onError в ArtworkImage
+                onError = onError
             )
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)), // Уменьшение интенсивности градиента
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)),
                             startY = 50f
                         )
                     )
@@ -86,13 +83,13 @@ fun CardTemplate(
             ) {
                 Text(
                     text = displayedTitle,
-                    style = MaterialTheme.typography.titleSmall, // Уменьшение размера текста
+                    style = MaterialTheme.typography.titleSmall,
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
                 )
                 Text(
                     text = displayedArtist,
-                    style = MaterialTheme.typography.bodySmall, // Уменьшение размера текста
+                    style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.7f),
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                 )
@@ -101,12 +98,13 @@ fun CardTemplate(
                 onClick = onFavoriteClick,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(50.dp) // Увеличение размера иконки
-                    .padding(5.dp) // Увеличение отступа от угла
+                    .size(50.dp)
+                    .padding(5.dp)
             ) {
                 Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = "Избранное",
+                    imageVector = if (isFavorite) Icons.Filled.Favorite
+                    else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Favorites",
                     tint = if (isFavorite) Color.Red else Color.White
                 )
             }

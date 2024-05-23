@@ -7,45 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-
-//class QuizViewModel(private val quizRepository: QuizRepository) : BaseViewModel() {
-//    private val _quizQuestion = MutableStateFlow("")
-//    val quizQuestion: StateFlow<String> = _quizQuestion
-//
-//    private val _quizResult = MutableStateFlow("")
-//    val quizResult: StateFlow<String> = _quizResult
-//
-//    fun generateQuizQuestion(prompt: String) {
-//        viewModelScope.launch {
-//            _isLoading.value = true // Начинаем загрузку
-//            try {
-//                val question = quizRepository.generateQuizQuestion(prompt)
-//                _quizQuestion.value = question
-//                _quizResult.value = "" // Сбрасываем результат при генерации нового вопроса
-//            } catch (e: Exception) {
-//                _error.value = e.message
-//            } finally {
-//                _isLoading.value = false // Завершаем загрузку
-//            }
-//        }
-//    }
-//
-//    fun checkQuizAnswer(question: String, userAnswer: String) {
-//        viewModelScope.launch {
-//            _isLoading.value = true // Начинаем загрузку
-//            try {
-//                val result = quizRepository.checkQuizAnswer(question, userAnswer)
-//                _quizResult.value = result
-//            } catch (e: Exception) {
-//                _error.value = e.message
-//            } finally {
-//                _isLoading.value = false // Завершаем загрузку
-//            }
-//        }
-//    }
-//}
-
-class QuizViewModel(private val quizRepository: QuizRepository) : BaseViewModel() {
+class QuizViewModel(
+    private val quizRepository: QuizRepository
+) : BaseViewModel() {
     private val _quizQuestion = MutableStateFlow("")
     val quizQuestion: StateFlow<String> get() = _quizQuestion
 
@@ -54,15 +18,15 @@ class QuizViewModel(private val quizRepository: QuizRepository) : BaseViewModel(
 
     fun generateQuizQuestion(prompt: String) {
         viewModelScope.launch {
-            _isLoading.value = true // Начинаем загрузку
+            _isLoading.value = true
             try {
                 val question = quizRepository.generateQuizQuestion(prompt)
                 _quizQuestion.value = question
-                _quizResult.value = "" // Сбрасываем результат при генерации нового вопроса
+                _quizResult.value = ""
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {
-                _isLoading.value = false // Завершаем загрузку
+                _isLoading.value = false
             }
         }
     }

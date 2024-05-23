@@ -50,7 +50,8 @@ fun TopAppBarWithSortButton(sortOrder: SortOrder, onSortOrderChange: (SortOrder)
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (sortOrder == SortOrder.NEWEST_FIRST) "Oldest First" else "Newest First",
+                    text = if (
+                        sortOrder == SortOrder.NEWEST_FIRST) "Oldest First" else "Newest First",
                     color = MaterialTheme.colorScheme.outline,
                     style = MaterialTheme.typography.labelLarge
                 )

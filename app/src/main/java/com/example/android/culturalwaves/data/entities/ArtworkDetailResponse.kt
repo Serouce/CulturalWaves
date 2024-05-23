@@ -10,8 +10,8 @@ data class ArtworkDetailResponse(
     @SerializedName("description") val description: String?,
     @SerializedName("images") val images: List<ImageDetail>?,
     @SerializedName("technique") val technique: String?,
-    @SerializedName("provenance") val provenance: String?, // Новое поле
-    @SerializedName("period") val period: String?, // Новое поле
+    @SerializedName("provenance") val provenance: String?,
+    @SerializedName("period") val period: String?,
     @SerializedName("dimensions") val dimensions: String?
 
 )

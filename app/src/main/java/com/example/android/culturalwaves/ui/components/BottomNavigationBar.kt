@@ -1,10 +1,5 @@
 package com.example.android.culturalwaves.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,7 +27,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                     Icon(
                         screen.icon,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)  // Установка размера иконки
+                        modifier = Modifier.size(24.dp)
                     )
                 },
                 label = { Text(screen.label) },
@@ -46,7 +41,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         restoreState = true
                     }
                 },
-                modifier = Modifier.weight(1f)  // Равномерное распределение пространства
+                modifier = Modifier.weight(1f)
             )
         }
     }

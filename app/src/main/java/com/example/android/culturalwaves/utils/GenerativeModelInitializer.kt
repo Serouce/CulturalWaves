@@ -7,7 +7,7 @@ class GenerativeModelInitializer {
         fun initializeModel(): GenerativeModel {
             return GenerativeModel(
                 modelName = "gemini-pro",
-                apiKey = "AIzaSyCyjwBNUDGV9sJayyjUsk2XeJPJqn_5Zww"
+                apiKey = GEMINI_API_KEY
             )
         }
     }
