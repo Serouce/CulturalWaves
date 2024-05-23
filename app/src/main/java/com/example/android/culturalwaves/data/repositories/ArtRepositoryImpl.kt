@@ -10,7 +10,6 @@ import com.example.android.culturalwaves.data.entities.Artwork
 import com.example.android.culturalwaves.data.entities.ArtworkDetailResponse
 import com.example.android.culturalwaves.data.network.ArtMuseumApiService
 import com.example.android.culturalwaves.data.paging.ArtworkPagingSource
-import com.example.android.culturalwaves.utils.HARVARD_API_KEY
 import com.example.android.culturalwaves.utils.PagerConfigurator
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
