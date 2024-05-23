@@ -48,7 +48,8 @@ class ArtworkPagingSource(
 
     override fun getRefreshKey(state: PagingState<Int, Artwork>): Int? {
         return state.anchorPosition?.let { position ->
-            state.closestPageToPosition(position)?.prevKey?.plus(1) ?: state.closestPageToPosition(position)?.nextKey?.minus(1)
+            state.closestPageToPosition(position)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(position)?.nextKey?.minus(1)
         }
     }
 }

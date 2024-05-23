@@ -33,7 +33,7 @@ class ArtRepositoryImpl(private val apiService: ArtMuseumApiService) : ArtReposi
                 )
             }
         ).flow
-            .debounce(3000)
+            .debounce(1000)
     }
 
 
