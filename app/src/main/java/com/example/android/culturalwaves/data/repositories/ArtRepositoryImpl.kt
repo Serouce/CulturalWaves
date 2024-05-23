@@ -1,8 +1,10 @@
 package com.example.android.culturalwaves.data.repositories
 
 import android.util.Log
+import androidx.core.os.BuildCompat
 import androidx.paging.Pager
 import androidx.paging.PagingData
+import com.example.android.culturalwaves.BuildConfig
 import com.example.android.culturalwaves.data.entities.ArtResponse
 import com.example.android.culturalwaves.data.entities.Artwork
 import com.example.android.culturalwaves.data.entities.ArtworkDetailResponse
@@ -16,7 +18,7 @@ import kotlinx.coroutines.flow.debounce
 import com.example.android.culturalwaves.utils.Result
 
 
-private const val API_KEY = HARVARD_API_KEY
+private const val API_KEY = BuildConfig.API_KEY
 
 class ArtRepositoryImpl(private val apiService: ArtMuseumApiService) : ArtRepository {
     private val pagerConfigurator = PagerConfigurator()

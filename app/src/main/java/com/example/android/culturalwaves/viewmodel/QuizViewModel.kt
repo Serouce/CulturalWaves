@@ -33,14 +33,14 @@ class QuizViewModel(
 
     fun checkQuizAnswer(question: String, userAnswer: String) {
         viewModelScope.launch {
-            _isLoading.value = true // Начинаем загрузку
+            _isLoading.value = true
             try {
                 val result = quizRepository.checkQuizAnswer(question, userAnswer)
                 _quizResult.value = result
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {
-                _isLoading.value = false // Завершаем загрузку
+                _isLoading.value = false
             }
         }
     }

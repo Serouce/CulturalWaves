@@ -37,7 +37,7 @@ fun SetupNavGraph(navController: NavHostController) {
             QuizScreen()
         }
         composable(
-            route = Screen.DetailScreen(0).route, // Используем шаблонный route для подстановки
+            route = Screen.DetailScreen(0).route,
             arguments = listOf(navArgument("objectId") { type = NavType.IntType })
         ) { backStackEntry ->
             val objectId = backStackEntry.arguments?.getInt("objectId") ?: return@composable

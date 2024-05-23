@@ -1,5 +1,6 @@
 package com.example.android.culturalwaves.utils
 
+import com.example.android.culturalwaves.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
 
 class GenerativeModelInitializer {
@@ -7,7 +8,7 @@ class GenerativeModelInitializer {
         fun initializeModel(): GenerativeModel {
             return GenerativeModel(
                 modelName = "gemini-pro",
-                apiKey = GEMINI_API_KEY
+                apiKey = BuildConfig.GEMINI_API_KEY
             )
         }
     }
